@@ -1,0 +1,3 @@
+numpy==1.11.1
+scipy==0.18.1
+simpleeval==0.8.7

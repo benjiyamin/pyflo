@@ -1,0 +1,340 @@
+{
+  "equation": "[a] / ([t] + [b]))",
+  "input_key": "[t]",
+  "units": {
+    "input": "min",
+    "output": "in/hr",
+    "duration": "yr"
+  },
+  "zones": [
+    {
+      "name": "REGION 01",
+      "frequencies": [
+        {
+          "duration": 2,
+          "coefficients": {
+            "[a]": 209,
+            "[b]": 30
+          }
+        },
+        {
+          "duration": 5,
+          "coefficients": {
+            "[a]": 247,
+            "[b]": 29
+          }
+        },
+        {
+          "duration": 10,
+          "coefficients": {
+            "[a]": 300,
+            "[b]": 36
+          }
+        },
+        {
+          "duration": 25,
+          "coefficients": {
+            "[a]": 327,
+            "[b]": 33
+          }
+        },
+        {
+          "duration": 50,
+          "coefficients": {
+            "[a]": 315,
+            "[b]": 28
+          }
+        },
+        {
+          "duration": 100,
+          "coefficients": {
+            "[a]": 367,
+            "[b]": 33
+          }
+        }
+      ]
+    },
+    {
+      "name": "REGION 02",
+      "frequencies": [
+        {
+          "duration": 2,
+          "coefficients": {
+            "[a]": 140,
+            "[b]": 21
+          }
+        },
+        {
+          "duration": 5,
+          "coefficients": {
+            "[a]": 190,
+            "[b]": 25
+          }
+        },
+        {
+          "duration": 10,
+          "coefficients": {
+            "[a]": 230,
+            "[b]": 29
+          }
+        },
+        {
+          "duration": 25,
+          "coefficients": {
+            "[a]": 260,
+            "[b]": 32
+          }
+        },
+        {
+          "duration": 50,
+          "coefficients": {
+            "[a]": 350,
+            "[b]": 38
+          }
+        },
+        {
+          "duration": 100,
+          "coefficients": {
+            "[a]": 375,
+            "[b]": 36
+          }
+        }
+      ]
+    },
+    {
+      "name": "REGION 03",
+      "frequencies": [
+        {
+          "duration": 2,
+          "coefficients": {
+            "[a]": 102,
+            "[b]": 17
+          }
+        },
+        {
+          "duration": 5,
+          "coefficients": {
+            "[a]": 131,
+            "[b]": 19
+          }
+        },
+        {
+          "duration": 10,
+          "coefficients": {
+            "[a]": 170,
+            "[b]": 23
+          }
+        },
+        {
+          "duration": 25,
+          "coefficients": {
+            "[a]": 230,
+            "[b]": 30
+          }
+        },
+        {
+          "duration": 50,
+          "coefficients": {
+            "[a]": 250,
+            "[b]": 27
+          }
+        },
+        {
+          "duration": 100,
+          "coefficients": {
+            "[a]": 290,
+            "[b]": 28
+          }
+        }
+      ]
+    },
+    {
+      "name": "REGION 04",
+      "frequencies": [
+        {
+          "duration": 2,
+          "coefficients": {
+            "[a]": 70,
+            "[b]": 13
+          }
+        },
+        {
+          "duration": 5,
+          "coefficients": {
+            "[a]": 97,
+            "[b]": 16
+          }
+        },
+        {
+          "duration": 10,
+          "coefficients": {
+            "[a]": 111,
+            "[b]": 16
+          }
+        },
+        {
+          "duration": 25,
+          "coefficients": {
+            "[a]": 170,
+            "[b]": 27
+          }
+        },
+        {
+          "duration": 50,
+          "coefficients": {
+            "[a]": 187,
+            "[b]": 24
+          }
+        },
+        {
+          "duration": 100,
+          "coefficients": {
+            "[a]": 240,
+            "[b]": 28
+          }
+        }
+      ]
+    },
+    {
+      "name": "REGION 05",
+      "frequencies": [
+        {
+          "duration": 2,
+          "coefficients": {
+            "[a]": 70,
+            "[b]": 16
+          }
+        },
+        {
+          "duration": 5,
+          "coefficients": {
+            "[a]": 81,
+            "[b]": 13
+          }
+        },
+        {
+          "duration": 10,
+          "coefficients": {
+            "[a]": 111,
+            "[b]": 17
+          }
+        },
+        {
+          "duration": 25,
+          "coefficients": {
+            "[a]": 130,
+            "[b]": 17
+          }
+        },
+        {
+          "duration": 50,
+          "coefficients": {
+            "[a]": 187,
+            "[b]": 25
+          }
+        },
+        {
+          "duration": 100,
+          "coefficients": {
+            "[a]": 240,
+            "[b]": 29
+          }
+        }
+      ]
+    },
+    {
+      "name": "REGION 06",
+      "frequencies": [
+        {
+          "duration": 2,
+          "coefficients": {
+            "[a]": 68,
+            "[b]": 14
+          }
+        },
+        {
+          "duration": 5,
+          "coefficients": {
+            "[a]": 75,
+            "[b]": 12
+          }
+        },
+        {
+          "duration": 10,
+          "coefficients": {
+            "[a]": 122,
+            "[b]": 23
+          }
+        },
+        {
+          "duration": 25,
+          "coefficients": {
+            "[a]": 155,
+            "[b]": 26
+          }
+        },
+        {
+          "duration": 50,
+          "coefficients": {
+            "[a]": 160,
+            "[b]": 21
+          }
+        },
+        {
+          "duration": 100,
+          "coefficients": {
+            "[a]": 210,
+            "[b]": 26
+          }
+        }
+      ]
+    },
+    {
+      "name": "REGION 07",
+      "frequencies": [
+        {
+          "duration": 2,
+          "coefficients": {
+            "[a]": 32,
+            "[b]": 11
+          }
+        },
+        {
+          "duration": 5,
+          "coefficients": {
+            "[a]": 48,
+            "[b]": 12
+          }
+        },
+        {
+          "duration": 10,
+          "coefficients": {
+            "[a]": 60,
+            "[b]": 13
+          }
+        },
+        {
+          "duration": 25,
+          "coefficients": {
+            "[a]": 67,
+            "[b]": 10
+          }
+        },
+        {
+          "duration": 50,
+          "coefficients": {
+            "[a]": 65,
+            "[b]": 8
+          }
+        },
+        {
+          "duration": 100,
+          "coefficients": {
+            "[a]": 77,
+            "[b]": 10
+          }
+        }
+      ]
+    }
+  ]
+}

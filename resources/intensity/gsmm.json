@@ -1,0 +1,987 @@
+{
+  "equation": "[a] / (([t] + [b])**[n])",
+  "input_key": "[t]",
+  "units": {
+    "input": "min",
+    "output": "in/hr",
+    "duration": "yr"
+  },
+  "zones": [
+    {
+      "name": "ALBANY",
+      "frequencies": [
+        {
+          "duration": 1,
+          "coefficients": {
+            "[n]": 0.8129,
+            "[a]": 56.99,
+            "[b]": 11
+          }
+        },
+        {
+          "duration": 2,
+          "coefficients": {
+            "[n]": 0.8464,
+            "[a]": 81.06,
+            "[b]": 15
+          }
+        },
+        {
+          "duration": 5,
+          "coefficients": {
+            "[n]": 0.7754,
+            "[a]": 73.44,
+            "[b]": 15
+          }
+        },
+        {
+          "duration": 10,
+          "coefficients": {
+            "[n]": 0.7632,
+            "[a]": 79.68,
+            "[b]": 16
+          }
+        },
+        {
+          "duration": 25,
+          "coefficients": {
+            "[n]": 0.7315,
+            "[a]": 81.36,
+            "[b]": 16
+          }
+        },
+        {
+          "duration": 50,
+          "coefficients": {
+            "[n]": 0.7132,
+            "[a]": 83.71,
+            "[b]": 16
+          }
+        },
+        {
+          "duration": 100,
+          "coefficients": {
+            "[n]": 0.7162,
+            "[a]": 94.2,
+            "[b]": 17
+          }
+        }
+      ]
+    },
+    {
+      "name": "ATLANTA",
+      "frequencies": [
+        {
+          "duration": 1,
+          "coefficients": {
+            "[n]": 0.75129,
+            "[a]": 35.11,
+            "[b]": 7
+          }
+        },
+        {
+          "duration": 2,
+          "coefficients": {
+            "[n]": 0.8542,
+            "[a]": 66.2,
+            "[b]": 12
+          }
+        },
+        {
+          "duration": 5,
+          "coefficients": {
+            "[n]": 0.7846,
+            "[a]": 62.28,
+            "[b]": 12
+          }
+        },
+        {
+          "duration": 10,
+          "coefficients": {
+            "[n]": 0.7768,
+            "[a]": 69.74,
+            "[b]": 13
+          }
+        },
+        {
+          "duration": 25,
+          "coefficients": {
+            "[n]": 0.7475,
+            "[a]": 72.79,
+            "[b]": 13
+          }
+        },
+        {
+          "duration": 50,
+          "coefficients": {
+            "[n]": 0.7519,
+            "[a]": 83.83,
+            "[b]": 14
+          }
+        },
+        {
+          "duration": 100,
+          "coefficients": {
+            "[n]": 0.7378,
+            "[a]": 87.36,
+            "[b]": 14
+          }
+        }
+      ]
+    },
+    {
+      "name": "ATHENS",
+      "frequencies": [
+        {
+          "duration": 1,
+          "coefficients": {
+            "[n]": 0.6166,
+            "[a]": 19.19,
+            "[b]": 4
+          }
+        },
+        {
+          "duration": 2,
+          "coefficients": {
+            "[n]": 0.8407,
+            "[a]": 65.12,
+            "[b]": 13
+          }
+        },
+        {
+          "duration": 5,
+          "coefficients": {
+            "[n]": 0.7642,
+            "[a]": 59.88,
+            "[b]": 13
+          }
+        },
+        {
+          "duration": 10,
+          "coefficients": {
+            "[n]": 0.7096,
+            "[a]": 54.12,
+            "[b]": 12
+          }
+        },
+        {
+          "duration": 25,
+          "coefficients": {
+            "[n]": 0.6796,
+            "[a]": 56.5,
+            "[b]": 12
+          }
+        },
+        {
+          "duration": 50,
+          "coefficients": {
+            "[n]": 0.6625,
+            "[a]": 58.95,
+            "[b]": 12
+          }
+        },
+        {
+          "duration": 100,
+          "coefficients": {
+            "[n]": 0.6485,
+            "[a]": 61.57,
+            "[b]": 12
+          }
+        }
+      ]
+    },
+    {
+      "name": "AUGUSTA",
+      "frequencies": [
+        {
+          "duration": 1,
+          "coefficients": {
+            "[n]": 0.9624,
+            "[a]": 101.38,
+            "[b]": 16
+          }
+        },
+        {
+          "duration": 2,
+          "coefficients": {
+            "[n]": 0.8336,
+            "[a]": 68.96,
+            "[b]": 14
+          }
+        },
+        {
+          "duration": 5,
+          "coefficients": {
+            "[n]": 0.8285,
+            "[a]": 80.74,
+            "[b]": 15
+          }
+        },
+        {
+          "duration": 10,
+          "coefficients": {
+            "[n]": 0.8154,
+            "[a]": 85.12,
+            "[b]": 15
+          }
+        },
+        {
+          "duration": 25,
+          "coefficients": {
+            "[n]": 0.8028,
+            "[a]": 92.94,
+            "[b]": 15
+          }
+        },
+        {
+          "duration": 50,
+          "coefficients": {
+            "[n]": 0.8169,
+            "[a]": 110.05,
+            "[b]": 16
+          }
+        },
+        {
+          "duration": 100,
+          "coefficients": {
+            "[n]": 0.8106,
+            "[a]": 117.15,
+            "[b]": 16
+          }
+        }
+      ]
+    },
+    {
+      "name": "BAINBRIDGE",
+      "frequencies": [
+        {
+          "duration": 1,
+          "coefficients": {
+            "[n]": 0.7298,
+            "[a]": 41.32,
+            "[b]": 9
+          }
+        },
+        {
+          "duration": 2,
+          "coefficients": {
+            "[n]": 0.9026,
+            "[a]": 111.46,
+            "[b]": 18
+          }
+        },
+        {
+          "duration": 5,
+          "coefficients": {
+            "[n]": 0.8229,
+            "[a]": 96.76,
+            "[b]": 18
+          }
+        },
+        {
+          "duration": 10,
+          "coefficients": {
+            "[n]": 0.7865,
+            "[a]": 93.56,
+            "[b]": 18
+          }
+        },
+        {
+          "duration": 25,
+          "coefficients": {
+            "[n]": 0.7516,
+            "[a]": 94.05,
+            "[b]": 18
+          }
+        },
+        {
+          "duration": 50,
+          "coefficients": {
+            "[n]": 0.7493,
+            "[a]": 104.51,
+            "[b]": 19
+          }
+        },
+        {
+          "duration": 100,
+          "coefficients": {
+            "[n]": 0.732,
+            "[a]": 106.76,
+            "[b]": 19
+          }
+        }
+      ]
+    },
+    {
+      "name": "BRUNSWICK",
+      "frequencies": [
+        {
+          "duration": 1,
+          "coefficients": {
+            "[n]": 1.3651,
+            "[a]": 1026.5,
+            "[b]": 40
+          }
+        },
+        {
+          "duration": 2,
+          "coefficients": {
+            "[n]": 0.9392,
+            "[a]": 145.04,
+            "[b]": 22
+          }
+        },
+        {
+          "duration": 5,
+          "coefficients": {
+            "[n]": 0.9606,
+            "[a]": 194.58,
+            "[b]": 26
+          }
+        },
+        {
+          "duration": 10,
+          "coefficients": {
+            "[n]": 0.987,
+            "[a]": 250.55,
+            "[b]": 29
+          }
+        },
+        {
+          "duration": 25,
+          "coefficients": {
+            "[n]": 1.0276,
+            "[a]": 359.87,
+            "[b]": 33
+          }
+        },
+        {
+          "duration": 50,
+          "coefficients": {
+            "[n]": 1.0428,
+            "[a]": 433.52,
+            "[b]": 35
+          }
+        },
+        {
+          "duration": 100,
+          "coefficients": {
+            "[n]": 1.0599,
+            "[a]": 522.14,
+            "[b]": 37
+          }
+        }
+      ]
+    },
+    {
+      "name": "COLUMBUS",
+      "frequencies": [
+        {
+          "duration": 1,
+          "coefficients": {
+            "[n]": 0.7101,
+            "[a]": 33.8,
+            "[b]": 8
+          }
+        },
+        {
+          "duration": 2,
+          "coefficients": {
+            "[n]": 0.8694,
+            "[a]": 80.37,
+            "[b]": 14
+          }
+        },
+        {
+          "duration": 5,
+          "coefficients": {
+            "[n]": 0.7965,
+            "[a]": 73.21,
+            "[b]": 14
+          }
+        },
+        {
+          "duration": 10,
+          "coefficients": {
+            "[n]": 0.7638,
+            "[a]": 72.53,
+            "[b]": 14
+          }
+        },
+        {
+          "duration": 25,
+          "coefficients": {
+            "[n]": 0.7534,
+            "[a]": 82.3,
+            "[b]": 15
+          }
+        },
+        {
+          "duration": 50,
+          "coefficients": {
+            "[n]": 0.7151,
+            "[a]": 77.31,
+            "[b]": 14
+          }
+        },
+        {
+          "duration": 100,
+          "coefficients": {
+            "[n]": 0.72,
+            "[a]": 87.89,
+            "[b]": 15
+          }
+        }
+      ]
+    },
+    {
+      "name": "MACON",
+      "frequencies": [
+        {
+          "duration": 1,
+          "coefficients": {
+            "[n]": 0.8658,
+            "[a]": 63.2,
+            "[b]": 12
+          }
+        },
+        {
+          "duration": 2,
+          "coefficients": {
+            "[n]": 0.8379,
+            "[a]": 69.07,
+            "[b]": 13
+          }
+        },
+        {
+          "duration": 5,
+          "coefficients": {
+            "[n]": 0.7639,
+            "[a]": 62.98,
+            "[b]": 13
+          }
+        },
+        {
+          "duration": 10,
+          "coefficients": {
+            "[n]": 0.7309,
+            "[a]": 62.45,
+            "[b]": 13
+          }
+        },
+        {
+          "duration": 25,
+          "coefficients": {
+            "[n]": 0.6997,
+            "[a]": 64.4,
+            "[b]": 13
+          }
+        },
+        {
+          "duration": 50,
+          "coefficients": {
+            "[n]": 0.6818,
+            "[a]": 66.67,
+            "[b]": 13
+          }
+        },
+        {
+          "duration": 100,
+          "coefficients": {
+            "[n]": 0.6864,
+            "[a]": 75.72,
+            "[b]": 14
+          }
+        }
+      ]
+    },
+    {
+      "name": "METRO CHATTANOOGA",
+      "frequencies": [
+        {
+          "duration": 1,
+          "coefficients": {
+            "[n]": 0.8326,
+            "[a]": 46.13,
+            "[b]": 10
+          }
+        },
+        {
+          "duration": 2,
+          "coefficients": {
+            "[n]": 0.8531,
+            "[a]": 62.15,
+            "[b]": 12
+          }
+        },
+        {
+          "duration": 5,
+          "coefficients": {
+            "[n]": 0.8275,
+            "[a]": 70.63,
+            "[b]": 13
+          }
+        },
+        {
+          "duration": 10,
+          "coefficients": {
+            "[n]": 0.8051,
+            "[a]": 73.41,
+            "[b]": 13
+          }
+        },
+        {
+          "duration": 25,
+          "coefficients": {
+            "[n]": 0.7844,
+            "[a]": 79.26,
+            "[b]": 13
+          }
+        },
+        {
+          "duration": 50,
+          "coefficients": {
+            "[n]": 0.7726,
+            "[a]": 84.31,
+            "[b]": 13
+          }
+        },
+        {
+          "duration": 100,
+          "coefficients": {
+            "[n]": 0.7852,
+            "[a]": 99.21,
+            "[b]": 14
+          }
+        }
+      ]
+    },
+    {
+      "name": "PEACHTREE CITY",
+      "frequencies": [
+        {
+          "duration": 1,
+          "coefficients": {
+            "[n]": 0.7669,
+            "[a]": 38.81,
+            "[b]": 8
+          }
+        },
+        {
+          "duration": 2,
+          "coefficients": {
+            "[n]": 0.8184,
+            "[a]": 57.93,
+            "[b]": 11
+          }
+        },
+        {
+          "duration": 5,
+          "coefficients": {
+            "[n]": 0.7769,
+            "[a]": 61.46,
+            "[b]": 12
+          }
+        },
+        {
+          "duration": 10,
+          "coefficients": {
+            "[n]": 0.7471,
+            "[a]": 61.89,
+            "[b]": 12
+          }
+        },
+        {
+          "duration": 25,
+          "coefficients": {
+            "[n]": 0.7191,
+            "[a]": 64.8,
+            "[b]": 12
+          }
+        },
+        {
+          "duration": 50,
+          "coefficients": {
+            "[n]": 0.7243,
+            "[a]": 74.7,
+            "[b]": 13
+          }
+        },
+        {
+          "duration": 100,
+          "coefficients": {
+            "[n]": 0.7107,
+            "[a]": 77.93,
+            "[b]": 13
+          }
+        }
+      ]
+    },
+    {
+      "name": "ROME",
+      "frequencies": [
+        {
+          "duration": 1,
+          "coefficients": {
+            "[n]": 0.7332,
+            "[a]": 30.17,
+            "[b]": 6
+          }
+        },
+        {
+          "duration": 2,
+          "coefficients": {
+            "[n]": 0.8496,
+            "[a]": 63.48,
+            "[b]": 12
+          }
+        },
+        {
+          "duration": 5,
+          "coefficients": {
+            "[n]": 0.8975,
+            "[a]": 102.01,
+            "[b]": 16
+          }
+        },
+        {
+          "duration": 10,
+          "coefficients": {
+            "[n]": 0.9424,
+            "[a]": 146.36,
+            "[b]": 19
+          }
+        },
+        {
+          "duration": 25,
+          "coefficients": {
+            "[n]": 0.9846,
+            "[a]": 214.67,
+            "[b]": 22
+          }
+        },
+        {
+          "duration": 50,
+          "coefficients": {
+            "[n]": 1.0341,
+            "[a]": 308.98,
+            "[b]": 25
+          }
+        },
+        {
+          "duration": 100,
+          "coefficients": {
+            "[n]": 1.0218,
+            "[a]": 323.71,
+            "[b]": 25
+          }
+        }
+      ]
+    },
+    {
+      "name": "ROSWELL",
+      "frequencies": [
+        {
+          "duration": 1,
+          "coefficients": {
+            "[n]": 0.7706,
+            "[a]": 36.65,
+            "[b]": 7
+          }
+        },
+        {
+          "duration": 2,
+          "coefficients": {
+            "[n]": 0.8603,
+            "[a]": 69.23,
+            "[b]": 13
+          }
+        },
+        {
+          "duration": 5,
+          "coefficients": {
+            "[n]": 0.8003,
+            "[a]": 67.01,
+            "[b]": 13
+          }
+        },
+        {
+          "duration": 10,
+          "coefficients": {
+            "[n]": 0.7739,
+            "[a]": 68.34,
+            "[b]": 13
+          }
+        },
+        {
+          "duration": 25,
+          "coefficients": {
+            "[n]": 0.771,
+            "[a]": 80.18,
+            "[b]": 14
+          }
+        },
+        {
+          "duration": 50,
+          "coefficients": {
+            "[n]": 0.7564,
+            "[a]": 84.2,
+            "[b]": 14
+          }
+        },
+        {
+          "duration": 100,
+          "coefficients": {
+            "[n]": 0.7445,
+            "[a]": 88.39,
+            "[b]": 14
+          }
+        }
+      ]
+    },
+    {
+      "name": "SAVANNAH",
+      "frequencies": [
+        {
+          "duration": 1,
+          "coefficients": {
+            "[n]": 0.7585,
+            "[a]": 47.79,
+            "[b]": 12
+          }
+        },
+        {
+          "duration": 2,
+          "coefficients": {
+            "[n]": 0.9086,
+            "[a]": 117.57,
+            "[b]": 20
+          }
+        },
+        {
+          "duration": 5,
+          "coefficients": {
+            "[n]": 0.8696,
+            "[a]": 125.46,
+            "[b]": 23
+          }
+        },
+        {
+          "duration": 10,
+          "coefficients": {
+            "[n]": 0.8401,
+            "[a]": 126.12,
+            "[b]": 24
+          }
+        },
+        {
+          "duration": 25,
+          "coefficients": {
+            "[n]": 0.8597,
+            "[a]": 167.17,
+            "[b]": 28
+          }
+        },
+        {
+          "duration": 50,
+          "coefficients": {
+            "[n]": 0.8619,
+            "[a]": 191.57,
+            "[b]": 30
+          }
+        },
+        {
+          "duration": 100,
+          "coefficients": {
+            "[n]": 0.8671,
+            "[a]": 220,
+            "[b]": 32
+          }
+        }
+      ]
+    },
+    {
+      "name": "TOCCOA",
+      "frequencies": [
+        {
+          "duration": 1,
+          "coefficients": {
+            "[n]": 1.1702,
+            "[a]": 249.8,
+            "[b]": 25
+          }
+        },
+        {
+          "duration": 2,
+          "coefficients": {
+            "[n]": 0.7757,
+            "[a]": 47.77,
+            "[b]": 11
+          }
+        },
+        {
+          "duration": 5,
+          "coefficients": {
+            "[n]": 0.7029,
+            "[a]": 45.46,
+            "[b]": 11
+          }
+        },
+        {
+          "duration": 10,
+          "coefficients": {
+            "[n]": 0.6719,
+            "[a]": 46.17,
+            "[b]": 11
+          }
+        },
+        {
+          "duration": 25,
+          "coefficients": {
+            "[n]": 0.6636,
+            "[a]": 53.6,
+            "[b]": 12
+          }
+        },
+        {
+          "duration": 50,
+          "coefficients": {
+            "[n]": 0.647,
+            "[a]": 56.24,
+            "[b]": 12
+          }
+        },
+        {
+          "duration": 100,
+          "coefficients": {
+            "[n]": 0.6336,
+            "[a]": 59.02,
+            "[b]": 12
+          }
+        }
+      ]
+    },
+    {
+      "name": "VALDOSTA",
+      "frequencies": [
+        {
+          "duration": 1,
+          "coefficients": {
+            "[n]": 0.8292,
+            "[a]": 64.11,
+            "[b]": 12
+          }
+        },
+        {
+          "duration": 2,
+          "coefficients": {
+            "[n]": 0.9691,
+            "[a]": 144.16,
+            "[b]": 19
+          }
+        },
+        {
+          "duration": 5,
+          "coefficients": {
+            "[n]": 0.9554,
+            "[a]": 165.56,
+            "[b]": 21
+          }
+        },
+        {
+          "duration": 10,
+          "coefficients": {
+            "[n]": 0.9484,
+            "[a]": 181.52,
+            "[b]": 22
+          }
+        },
+        {
+          "duration": 25,
+          "coefficients": {
+            "[n]": 0.9409,
+            "[a]": 205.19,
+            "[b]": 23
+          }
+        },
+        {
+          "duration": 50,
+          "coefficients": {
+            "[n]": 0.944,
+            "[a]": 232.46,
+            "[b]": 24
+          }
+        },
+        {
+          "duration": 100,
+          "coefficients": {
+            "[n]": 0.9492,
+            "[a]": 263.26,
+            "[b]": 25
+          }
+        }
+      ]
+    },
+    {
+      "name": "VIDALIA",
+      "frequencies": [
+        {
+          "duration": 1,
+          "coefficients": {
+            "[n]": 0.8456,
+            "[a]": 62.75,
+            "[b]": 11
+          }
+        },
+        {
+          "duration": 2,
+          "coefficients": {
+            "[n]": 0.8202,
+            "[a]": 73.13,
+            "[b]": 15
+          }
+        },
+        {
+          "duration": 5,
+          "coefficients": {
+            "[n]": 0.7515,
+            "[a]": 66.71,
+            "[b]": 15
+          }
+        },
+        {
+          "duration": 10,
+          "coefficients": {
+            "[n]": 0.7203,
+            "[a]": 66.01,
+            "[b]": 15
+          }
+        },
+        {
+          "duration": 25,
+          "coefficients": {
+            "[n]": 0.6904,
+            "[a]": 67.85,
+            "[b]": 15
+          }
+        },
+        {
+          "duration": 50,
+          "coefficients": {
+            "[n]": 0.6912,
+            "[a]": 76.37,
+            "[b]": 16
+          }
+        },
+        {
+          "duration": 100,
+          "coefficients": {
+            "[n]": 0.6764,
+            "[a]": 78.89,
+            "[b]": 16
+          }
+        }
+      ]
+    }
+  ]
+}

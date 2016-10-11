@@ -1,0 +1,218 @@
+"""Functions for generating and manipulating 2-column ordered pair data.
+
+:copyright: 2016, See AUTHORS for more details.
+:license: GNU General Public License, See LICENSE for more details.
+
+"""
+
+
+import math
+from typing import List, Tuple
+
+import simpleeval
+from scipy import interpolate
+
+
+EVAL_FUNCS = {
+    'acos': math.acos,
+    'acosh': math.acosh,
+    'asin': math.asin,
+    'asinh': math.asinh,
+    'atan': math.atan,
+    'atan2': math.atan2,
+    'atanh': math.atanh,
+    'ceil': math.ceil,
+    'copysign': math.copysign,
+    'cos': math.cos,
+    'cosh': math.cosh,
+    'degrees': math.degrees,
+    'e': math.e,
+    'exp': math.exp,
+    'fabs': math.fabs,
+    'factorial': math.factorial,
+    'floor': math.floor,
+    'fmod': math.fmod,
+    'frexp': math.frexp,
+    'fsum': math.fsum,
+    'hypot': math.hypot,
+    'isinf': math.isinf,
+    'isnan': math.isnan,
+    'ldexp': math.ldexp,
+    'log': math.log,
+    'log10': math.log10,
+    'log1p': math.log1p,
+    'modf': math.modf,
+    'pi': math.pi,
+    'pow': math.pow,
+    'radians': math.radians,
+    'sin': math.sin,
+    'sinh': math.sinh,
+    'sqrt': math.sqrt,
+    'tan': math.tan,
+    'tanh': math.tanh,
+    'trunc': math.trunc,
+}
+
+
+class Distribution(object):
+
+    def __init__(self, data):
+        """A scalable and ordered 2-column relationship of data.
+
+        Args:
+            data (List[Tuple[float, float]]): A list of pairs, scaled or unscaled.
+
+        Raises:
+            ValueError: If any of the values within the tuples of data are negative.
+
+        """
+        data = sorted(data, key=lambda line: line[0])
+        x_col = [ratio[0] for ratio in data]
+        if x_col[0] < 0.0:
+            raise ValueError('First column values in data must all be positive numbers.')
+        self.data = data
+
+    def get_y(self, x):
+        """Get the corresponding value from the second column of the distribution, interpolated if
+        needed.
+
+        Args:
+            x (float): A value in the first column.
+
+        Returns:
+            float: The corresponding value from the second column.
+
+        Raises:
+            ValueError: If the time_ratio is negative.
+
+        """
+        if x < 0.0:
+            raise ValueError('Defined first column value must be positive number.')
+        x_col, y_col = zip(*self.data)
+        fill_value = y_col[0], y_col[-1]
+        y_interp = interpolate.interp1d(x_col, y_col, bounds_error=False, fill_value=fill_value)
+        return y_interp(x)
+
+    def data_scaled_by(self, x, y, **kwargs):
+        """Generate pairs where each value is scaled by a defined amount.
+
+        Args:
+            x (float): The value to multiply members of the first column by.
+            y (float): The value to multiply members of the second column by.
+
+        Yields:
+            Tuple[float, float]: The next scaled pair.
+
+        """
+        x_step = kwargs.pop('x_step', None)
+        x_delta = kwargs.pop('x_delta', None)
+        if x_step or x_delta:
+            if not x_step:
+                x_step = float(x_delta) / x
+            x_last = self.data[-1][0]
+            x_steps = math.ceil(x_last / x_step)
+            for step in range(x_steps + 1):
+                x_curr = step * x_step
+                x_new = x_curr * x
+                y_curr = self.get_y(x_curr)
+                y_new = y * y_curr
+                yield x_new, y_new
+        else:
+            for x_curr, y_curr in self.data:
+                yield x_curr * x, y_curr * y
+
+    def scaled_by(self, x, y, **kwargs):
+        """Get a new distribution with ordered pairs where each value is scaled by a defined amount.
+
+        Args:
+            x (float): The value to multiply members of the first column by.
+            y (float): The value to multiply members of the second column by.
+
+        Returns:
+            Distribution: The new, scaled distribution.
+
+        """
+        data_new = list(self.data_scaled_by(x, y, **kwargs))
+        dist_new = Distribution(data_new)
+        return dist_new
+
+
+class Evaluator(object):
+
+    def __init__(self, equation, x_key, eq_kwargs=None, **kwargs):
+        """Generates output data from an equation string.
+
+        Args:
+            equation (str): A string in Python math format. All variables introduced here must be
+                included in either the x_key or eq_kwargs arguments.
+            x_key (str): The name of the variable in the equation which inputs will be passed.
+            eq_kwargs (dict): Additional variables to pass to the equation string.
+
+        """
+        self.equation = equation
+        self.x_key = x_key
+        self.eq_kwargs = eq_kwargs
+        self.x_multi = kwargs.pop('x_multi', None)
+        self.get_y(x=1.0)
+
+    def get_y(self, x):
+        """Get the corresponding output of the evaluated equation string, given an input.
+
+        Args:
+            x (float): An input value.
+
+        Returns:
+            float: The corresponding output generated by the equation string.
+
+        Raises:
+            ValueError: If the equation string is invalid.
+
+        """
+        eq = self.equation
+        for key, val in self.eq_kwargs.items():
+            eq = eq.replace(key, str(val))
+        if self.x_multi:
+            x *= self.x_multi
+        eq = eq.replace(self.x_key, str(x))
+        try:
+            return simpleeval.simple_eval(eq, functions=EVAL_FUNCS)
+        except:
+            raise ValueError('Error in the produced equation: {0}'.format(eq))
+
+    def get_data(self, x_max, x_delta, product=False):
+        """Generate ordered pairs over the defined range.
+
+        Args:
+            x_max (float): The maximum input to retrieve values.
+            x_delta (float): The interval to increment calculations by.
+            product (bool): If true the generated output value will be multiplied by the input
+                value before between evaluation and storing to 2nd column. Default is false.
+
+        Yields:
+            Tuple[float, float]: The next ordered pair.
+
+        """
+        x_steps = math.ceil(x_max / x_delta)
+        for step in range(x_steps + 1):
+            x_new = step * x_delta
+            y_new = self.get_y(x_new)
+            if product:
+                y_new *= x_new
+            yield x_new, y_new
+
+    def get_distribution(self, x_max, x_delta, product=False):
+        """Generate a distribution with ordered pairs over the defined range.
+
+        Args:
+            x_max (float): The maximum input to retrieve values.
+            x_delta (float): The interval to increment calculations by.
+            product (bool): If true the generated output value will be multiplied by the input
+                value before between evaluation and storing to 2nd column. Default is false.
+
+        Returns:
+            Distribution: The generated distribution.
+
+        """
+        data_new = list(self.get_data(x_max, x_delta, product))
+        dist_new = Distribution(data_new)
+        return dist_new
