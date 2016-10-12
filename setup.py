@@ -10,15 +10,15 @@ def read(filename):
 setup(
     name='pyflo',
     version=0.1,
-    author='benjiyamin, see AUTHORS.rst',
+    author='benjiyamin, see AUTHORS.md',
     author_email='benjiyamin@gmail.com',
     description='Hydra is an open-source library written in Python for performing hydraulic and '
                 'hydrology stormwater analysis. ',
-    license='GNU General Public License, see LICENSE.rst',
+    license='GNU General Public License, see LICENSE.md',
     keywords='hydraulics hydrology storm simulation,',
     url='https://github.com/benjiyamin/pyflo',
     packages=['pyflo'],
-    long_description=read('README.rst'),
+    long_description=read('README.md'),
     classifiers=[
         'Development Status :: 4 - Beta',
         'Operating System :: MacOS :: MacOS X',

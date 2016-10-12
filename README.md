@@ -1,5 +1,4 @@
-Project PyFlo
-=============
+# Project PyFlo
 
 PyFlo is an open-source library written in Python for performing
 hydraulic and hydrology stormwater analysis. Capabilities include
@@ -13,6 +12,6 @@ more powerful than a single person ever could.
 
 To install the easy way, using pip:
 
-.. code-block:: bash
-
-    $ pip install pyflo
+```bash
+$ pip install pyflo
+```
