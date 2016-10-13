@@ -47,7 +47,6 @@ basin = hydrology.Basin(
 )
 
 runoff_hydrograph = basin.runoff_hydrograph(x_step=0.1)
-
 ```
 
 ## Contributing
@@ -55,10 +54,9 @@ runoff_hydrograph = basin.runoff_hydrograph(x_step=0.1)
 For developers, it's important to use common best practices when contributing to the project.
 [PEP 8](https://www.python.org/dev/peps/pep-0008/) should always be adhered to. Code should be
 documented with [Google style docstrings](http://sphinxcontrib-napoleon.readthedocs.io/en/latest/example_google.html)
-Pull requests and filing issues are encouraged. We'd love to hear what works for you, and what 
-does not.
+Pull requests and filing issues are encouraged.
 
-To get started with contributing with the PyFlo repository:
+To start contributing with the PyFlo repository:
 
 1. Fork it!
 2. Create your feature branch: `git checkout -b my-new-feature`
@@ -66,7 +64,7 @@ To get started with contributing with the PyFlo repository:
 4. Push to the branch: `git push origin my-new-feature`
 5. Submit a pull request :D
 
-For a list of  contributors who have participated in this project,
+For a list of contributors who have participated in this project,
 check out [AUTHORS.md](AUTHORS.md).
 
 ## Testing
