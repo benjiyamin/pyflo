@@ -74,12 +74,7 @@ To start contributing with the PyFlo repository:
 3. Add the original as a remote repository named `upstream`.
 
     ```bash
-    $ git remote -v
-    origin  https://github.com/YOUR-USERNAME/pyflo.git (fetch)
-    origin  https://github.com/YOUR-USERNAME/pyflo.git (push)
-    
     $ git remote add upstream https://github.com/benjiyamin/pyflo.git
-    
     $ git remote -v
     origin    https://github.com/YOUR-USERNAME/pyflo.git (fetch)
     origin    https://github.com/YOUR-USERNAME/pyflo.git (push)
@@ -107,13 +102,6 @@ local changes.
     Switched to branch 'master'
     
     $ git merge upstream/master
-    Updating a422352..5fdff0f
-    Fast-forward
-     README                    |    9 -------
-     README.md                 |    7 ++++++
-     2 files changed, 7 insertions(+), 9 deletions(-)
-     delete mode 100644 README
-     create mode 100644 README.md
     ```
 
 6. Commit your local changes and push to `upstream/master`.
