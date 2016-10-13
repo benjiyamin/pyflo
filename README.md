@@ -54,7 +54,7 @@ runoff_hydrograph = basin.runoff_hydrograph(x_step=0.1)
 
 For developers, it's important to use common best practices when contributing to the project.
 [PEP 8](https://www.python.org/dev/peps/pep-0008/) should always be adhered to. Code should be
-documented with [Google style docstrings](http://sphinxcontrib-napoleon.readthedocs.io/en/latest/example_google.html
+documented with [Google style docstrings](http://sphinxcontrib-napoleon.readthedocs.io/en/latest/example_google.html)
 Pull requests and filing issues are encouraged. We'd love to hear what works for you, and what 
 does not.
 
