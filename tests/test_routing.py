@@ -157,8 +157,8 @@ class BasinTest(unittest.TestCase):
 
     def test_rainfall_hydrograph(self):
         rainfall_dist = numpy.array(self.ratio_pairs)
-        hydrograph = rainfall_dist * [6.0, 5.0]
-        data = [(round(line[0], 1), round(line[1], 2)) for line in hydrograph.tolist()]
+        rainfall_depths = rainfall_dist * [6.0, 5.0]
+        data = [(round(line[0], 1), round(line[1], 2)) for line in rainfall_depths.tolist()]
         control = [
             (0.0, 0.00),
             (0.3, 0.37),
@@ -186,8 +186,8 @@ class BasinTest(unittest.TestCase):
 
     def test_runoff_depth(self):
         rainfall_dist = numpy.array(self.ratio_pairs)
-        hydrograph = rainfall_dist * [6.0, 5.0]
-        data = hydrograph.tolist()
+        rainfall_depths = rainfall_dist * [6.0, 5.0]
+        data = rainfall_depths.tolist()
         rounded_data = []
         for line in data:
             runoff_depth = self.basin.runoff_depth(line[1])
@@ -219,8 +219,8 @@ class BasinTest(unittest.TestCase):
 
     def test_runoff_depth_incremental(self):
         rainfall_dist = numpy.array(self.ratio_pairs)
-        hydrograph = rainfall_dist * [6.0, 5.0]
-        data = self.basin.runoff_depth_incremental(hydrograph, interval=0.3)
+        rainfall_depths = rainfall_dist * [6.0, 5.0]
+        data = self.basin.runoff_depth_incremental(rainfall_depths, interval=0.3)
         data = [round(line, 2) for line in data]
         control = [
             0.00,
@@ -248,8 +248,8 @@ class BasinTest(unittest.TestCase):
 
     def test_flood_hydrograph(self):
         rainfall_dist = numpy.array(self.ratio_pairs)
-        rainfall_hydrograph = rainfall_dist * [6.0, 5.0]
-        hydrograph = self.basin.flood_hydrograph(rainfall_hydrograph, interval=0.3)
+        rainfall_depths = rainfall_dist * [6.0, 5.0]
+        hydrograph = self.basin.flood_hydrograph(rainfall_depths, interval=0.3)
         data = [(round(line[0], 1), round(line[1], 0)) for line in hydrograph.tolist()]
         control = [
             (0.0, 0.0),

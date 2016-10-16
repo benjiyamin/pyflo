@@ -1,14 +1,12 @@
 # Project PyFlo
 
-PyFlo is an open-source library written in Python for performing
-hydraulic and hydrology stormwater analysis. Capabilities include
-network hydraulic grade analysis and time/iteration based storage and flood
-routing simulations. SCS Unit Hydrograph and Rational Method are included
-for basin computations. Most of the calculations and procedures are
-derived from available existing publications and resources. There are
-some GUI programs available that have similar capabilities. The intent is
-that many will build from and contribute to the project, making it much
-more powerful than a single person ever could.
+PyFlo is an open-source library written in Python for performing hydraulic and hydrology stormwater 
+analysis. Capabilities include network hydraulic grade analysis and time/iteration based storage and 
+flood routing simulations. SCS Unit Hydrograph and Rational Method are included for basin 
+computations. Most of the calculations and procedures are derived from available existing 
+publications and resources. There are some GUI programs available that have similar capabilities. 
+The intent is that many will build from and contribute to the project, making it much more powerful 
+than a single person ever could.
 
 ## Installation
 
@@ -46,10 +44,10 @@ basin = hydrology.Basin(
 #### Unit Hydrograph
 
 With PyFlo, it's fairly simple to create a unit hydrograph, which represents the time-flow 
-relationship per unit (inch) of depth.
+relationship per unit (inch) of runoff depth.
 
 ```python
-runoff_hydrograph = basin.unit_hydrograph(interval=0.3)
+unit_hydrograph = basin.unit_hydrograph(interval=0.3)
 ```
 
 We can use `matplotlib` to plot the example results:
@@ -57,22 +55,22 @@ We can use `matplotlib` to plot the example results:
 ```python
 from matplotlib import pyplot
 
-x = runoff_hydrograph[:, 0]
-y = runoff_hydrograph[:, 1]
+x = unit_hydrograph[:, 0]
+y = unit_hydrograph[:, 1]
 pyplot.plot(x, y, 'k')
 pyplot.plot(x, y, 'bo')
-pyplot.title(r'Runoff Hydrograph from Example 16-1')
+pyplot.title(r'Unit Hydrograph from Example 16-1')
 pyplot.xlabel(r'Time ($hr$)')
 pyplot.ylabel(r'Discharge ($\frac{ft^{3}}{s}$)')
 pyplot.show()
 ```
 
-![Runoff Hydrograph](docs/img/runoff_hydrograph_16-1.png "Runoff Hydrograph")
+![Unit Hydrograph](docs/img/unit_hydrograph_16-1.png "Unit Hydrograph")
 
 #### Flood Hydrograph
 
 A flood hydrograph can be generated, which is a time-flow relationship synthesized from basin 
-and rainfall properties.
+properties and a provided scaled rainfall distribution.
 
 ```python
 import numpy
@@ -100,8 +98,8 @@ rainfall_dist = numpy.array([
     (0.95, 0.980),
     (1.00, 1.000)
 ])
-rainfall_hydrograph = rainfall_dist * [6.0, 5.0]
-flood_hydrograph = basin.flood_hydrograph(rainfall_hydrograph, interval=0.3)
+rainfall_depths = rainfall_dist * [6.0, 5.0]  # Scale array to 5 inches over 6 hours.
+flood_hydrograph = basin.flood_hydrograph(rainfall_depths, interval=0.3)
 ```
 
 We can use `matplotlib` to plot the example results:
@@ -128,7 +126,7 @@ For developers, it's important to use common best practices when contributing to
 documented with [Google style docstrings](http://sphinxcontrib-napoleon.readthedocs.io/en/latest/example_google.html).
 Pull requests and filing issues are encouraged.
 
-To start contributing with the PyFlo repository:
+### To start contributing with the PyFlo repository:
 
 ##### 1) Fork it!
 
@@ -166,8 +164,7 @@ From https://github.com/benjiyamin/pyflo
  * [new branch]      master     -> upstream/master
 ```
 
-##### 5) Checkout your local `master` branch and sync `upstream/master` to it, without losing 
-local changes.
+##### 5) Checkout your local `master` branch and sync `upstream/master` to it, without losing local changes.
 
 ```bash
 $ git checkout master
@@ -185,8 +182,7 @@ $ git push upstream master
 
 ##### 7) Submit a pull request. =)
 
-For a list of contributors who have participated in this project,
-check out [AUTHORS](AUTHORS.md).
+For a list of contributors who have participated in this project, check out [AUTHORS](AUTHORS.md).
 
 ## Testing
 
