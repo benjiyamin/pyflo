@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        
+        
+        
+        <link rel="shortcut icon" href="./img/favicon.ico">
+
+	<title>PyFlo</title>
+
+        <link href="./css/bootstrap-custom.min.css" rel="stylesheet">
+        <link href="./css/font-awesome-4.5.0.css" rel="stylesheet">
+        <link href="./css/base.css" rel="stylesheet">
+        <link rel="stylesheet" href="./css/highlight.css">
+
+        <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+        <!--[if lt IE 9]>
+            <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+            <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+        <![endif]-->
+
+        
+    </head>
+
+    <body class="homepage">
+
+        <div class="navbar navbar-default navbar-fixed-top" role="navigation">
+    <div class="container">
+
+        <!-- Collapsed navigation -->
+        <div class="navbar-header">
+            
+            <!-- Expander button -->
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            
+
+            <!-- Main title -->
+            <a class="navbar-brand" href=".">PyFlo</a>
+        </div>
+
+        <!-- Expanded navigation -->
+        <div class="navbar-collapse collapse">
+            
+                <!-- Main navigation -->
+                <ul class="nav navbar-nav">
+                
+                
+                    <li class="active">
+                        <a href=".">Home</a>
+                    </li>
+                
+                
+                
+                    <li >
+                        <a href="authors/">Authors</a>
+                    </li>
+                
+                
+                
+                    <li >
+                        <a href="license/">License</a>
+                    </li>
+                
+                
+                </ul>
+            
+
+            <ul class="nav navbar-nav navbar-right">
+                <li>
+                    <a href="#" data-toggle="modal" data-target="#mkdocs_search_modal">
+                        <i class="fa fa-search"></i> Search
+                    </a>
+                </li>
+                
+                    <li class="disabled">
+                        <a rel="next" >
+                            <i class="fa fa-arrow-left"></i> Previous
+                        </a>
+                    </li>
+                    <li >
+                        <a rel="prev" href="authors/">
+                            Next <i class="fa fa-arrow-right"></i>
+                        </a>
+                    </li>
+                
+                
+                    <li>
+                        <a href="https://github.com/benjiyamin/pyflo/">
+                            
+                                <i class="fa fa-github"></i>
+                            
+                            GitHub
+                        </a>
+                    </li>
+                
+            </ul>
+        </div>
+    </div>
+</div>
+
+        <div class="container">
+            
+                <div class="col-md-3"><div class="bs-sidebar hidden-print affix well" role="complementary">
+    <ul class="nav bs-sidenav">
+    
+        <li class="main active"><a href="#project-pyflo">Project PyFlo</a></li>
+        
+            <li><a href="#installation">Installation</a></li>
+        
+            <li><a href="#examples">Examples</a></li>
+        
+            <li><a href="#contributing">Contributing</a></li>
+        
+            <li><a href="#testing">Testing</a></li>
+        
+            <li><a href="#license">License</a></li>
+        
+    
+    </ul>
+</div></div>
+                <div class="col-md-9" role="main">
+
+<h1 id="project-pyflo">Project PyFlo</h1>
+<p>PyFlo is an open-source library written in Python for performing
+hydraulic and hydrology stormwater analysis. Capabilities include
+network hydraulic grade analysis and time/iteration based storage and flood
+routing simulations. SCS Unit Hydrograph and Rational Method are included
+for basin computations. Most of the calculations and procedures are
+derived from available existing publications and resources. There are
+some GUI programs available that have similar capabilities. The intent is
+that many will build from and contribute to the project, making it much
+more powerful than a single person ever could.</p>
+<h2 id="installation">Installation</h2>
+<p>Installing the easy way, using pip:</p>
+<pre><code class="bash">$ pip install pyflo
+</code></pre>
+
+<p>Setting up a clean working environment, using virtualenv:</p>
+<pre><code class="bash">$ virtualenv -p python3 venv
+$ source venv/bin/activate
+$ pip install -r requirements.txt
+</code></pre>
+
+<h2 id="examples">Examples</h2>
+<h3 id="from-neh-hydrology-ch-16-ex-16-1">From <a href="http://www.wcc.nrcs.usda.gov/ftpref/wntsc/H&amp;H/NEHhydrology/ch16.pdf#page=15">NEH Hydrology Ch. 16, Ex. 16-1</a>:</h3>
+<pre><code class="python">from pyflo import system
+from pyflo.nrcs import hydrology
+
+uh484 = system.array_from_csv('./resources/distributions/runoff/scs484.csv')
+basin = hydrology.Basin(
+    area=4.6,
+    cn=85.0,
+    tc=2.3,
+    runoff_dist=uh484,
+    peak_factor=484.0
+)
+</code></pre>
+
+<h4 id="unit-hydrograph">Unit Hydrograph</h4>
+<p>With PyFlo, it's fairly simple to create a unit hydrograph, which represents the time-flow 
+relationship per unit (inch) of depth.</p>
+<pre><code class="python">runoff_hydrograph = basin.unit_hydrograph(interval=0.3)
+</code></pre>
+
+<p>We can use <code>matplotlib</code> to plot the example results:</p>
+<pre><code class="python">from matplotlib import pyplot
+
+x = runoff_hydrograph[:, 0]
+y = runoff_hydrograph[:, 1]
+pyplot.plot(x, y, 'k')
+pyplot.plot(x, y, 'bo')
+pyplot.title(r'Runoff Hydrograph from Example 16-1')
+pyplot.xlabel(r'Time ($hr$)')
+pyplot.ylabel(r'Discharge ($\frac{ft^{3}}{s}$)')
+pyplot.show()
+</code></pre>
+
+<p><img alt="Runoff Hydrograph" src="./img/runoff_hydrograph_16-1.png" title="Runoff Hydrograph" /></p>
+<h4 id="flood-hydrograph">Flood Hydrograph</h4>
+<p>A flood hydrograph can be generated, which is a time-flow relationship synthesized from basin 
+and rainfall properties.</p>
+<pre><code class="python">import numpy
+
+rainfall_dist = numpy.array([
+    (0.00, 0.000),
+    (0.05, 0.074),
+    (0.10, 0.174),
+    (0.15, 0.280),
+    (0.20, 0.378),
+    (0.25, 0.448),
+    (0.30, 0.496),
+    (0.35, 0.526),
+    (0.40, 0.540),
+    (0.45, 0.540),
+    (0.50, 0.540),
+    (0.55, 0.542),
+    (0.60, 0.554),
+    (0.65, 0.582),
+    (0.70, 0.640),
+    (0.75, 0.724),
+    (0.80, 0.816),
+    (0.85, 0.886),
+    (0.90, 0.940),
+    (0.95, 0.980),
+    (1.00, 1.000)
+])
+rainfall_hydrograph = rainfall_dist * [6.0, 5.0]
+flood_hydrograph = basin.flood_hydrograph(rainfall_hydrograph, interval=0.3)
+</code></pre>
+
+<p>We can use <code>matplotlib</code> to plot the example results:</p>
+<pre><code class="python">from matplotlib import pyplot
+
+x = flood_hydrograph[:, 0]
+y = flood_hydrograph[:, 1]
+pyplot.plot(x, y, 'k')
+pyplot.plot(x, y, 'bo')
+pyplot.title(r'Flood Hydrograph from Example 16-1')
+pyplot.xlabel(r'Time ($hr$)')
+pyplot.ylabel(r'Discharge ($\frac{ft^{3}}{s}$)')
+pyplot.show()
+</code></pre>
+
+<p><img alt="Flood Hydrograph" src="./img/flood_hydrograph_16-1.png" title="Flood Hydrograph" /></p>
+<h2 id="contributing">Contributing</h2>
+<p>For developers, it's important to use common best practices when contributing to the project.
+<a href="https://www.python.org/dev/peps/pep-0008/">PEP 8</a> should always be adhered. Code should be
+documented with <a href="http://sphinxcontrib-napoleon.readthedocs.io/en/latest/example_google.html">Google style docstrings</a>.
+Pull requests and filing issues are encouraged.</p>
+<p>To start contributing with the PyFlo repository:</p>
+<h5 id="1-fork-it">1) Fork it!</h5>
+<h5 id="2-create-a-local-clone-of-your-fork">2) Create a local clone of your fork.</h5>
+<pre><code class="bash">$ git clone https://github.com/YOUR-USERNAME/pyflo
+Cloning into `pyflo`...
+remote: Counting objects: 10, done.
+remote: Compressing objects: 100% (8/8), done.
+remove: Total 10 (delta 1), reused 10 (delta 1)
+Unpacking objects: 100% (10/10), done.
+</code></pre>
+
+<h5 id="3-add-the-original-as-a-remote-repository-named-upstream">3) Add the original as a remote repository named <code>upstream</code>.</h5>
+<pre><code class="bash">$ git remote add upstream https://github.com/benjiyamin/pyflo.git
+$ git remote -v
+origin    https://github.com/YOUR-USERNAME/pyflo.git (fetch)
+origin    https://github.com/YOUR-USERNAME/pyflo.git (push)
+upstream  https://github.com/benjiyamin/pyflo.git (fetch)
+upstream  https://github.com/benjiyamin/pyflo.git (push)
+</code></pre>
+
+<h5 id="4-fetch-the-current-upstream-repository-branches-and-commits">4) Fetch the current upstream repository branches and commits.</h5>
+<pre><code class="bash">$ git fetch upstream
+remote: Counting objects: 75, done.
+remote: Compressing objects: 100% (53/53), done.
+remote: Total 62 (delta 27), reused 44 (delta 9)
+Unpacking objects: 100% (62/62), done.
+From https://github.com/benjiyamin/pyflo
+ * [new branch]      master     -&gt; upstream/master
+</code></pre>
+
+<h5 id="5-checkout-your-local-master-branch-and-sync-upstreammaster-to-it-without-losing">5) Checkout your local <code>master</code> branch and sync <code>upstream/master</code> to it, without losing</h5>
+<p>local changes.</p>
+<pre><code class="bash">$ git checkout master
+Switched to branch 'master'
+
+$ git merge upstream/master
+</code></pre>
+
+<h5 id="6-commit-your-local-changes-and-push-to-upstreammaster">6) Commit your local changes and push to <code>upstream/master</code>.</h5>
+<pre><code class="bash">$ git commit -m 'Add some feature'
+$ git push upstream master
+</code></pre>
+
+<h5 id="7-submit-a-pull-request">7) Submit a pull request. =)</h5>
+<p>For a list of contributors who have participated in this project,
+check out <a href="authors/">AUTHORS</a>.</p>
+<h2 id="testing">Testing</h2>
+<p>Unit Testing is currently done using the built-in unittest module:</p>
+<pre><code class="bash">$ python tests.py
+</code></pre>
+
+<h2 id="license">License</h2>
+<p>This project is licensed under GPL 3.0 - see <a href="license/">LICENSE</a> for details.</p></div>
+            
+        </div>
+
+        <footer class="col-md-12">
+            <hr>
+            
+            <p>Documentation built with <a href="http://www.mkdocs.org/">MkDocs</a>.</p>
+        </footer>
+
+        <script src="./js/jquery-1.10.2.min.js"></script>
+        <script src="./js/bootstrap-3.0.3.min.js"></script>
+        <script src="./js/highlight.pack.js"></script>
+        <script>var base_url = '.';</script>
+        <script data-main="./mkdocs/js/search.js" src="./mkdocs/js/require.js"></script>
+        <script src="./js/base.js"></script>
+
+        <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="Search Modal" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                        <h4 class="modal-title" id="exampleModalLabel">Search</h4>
+                    </div>
+                    <div class="modal-body">
+                        <p>
+                            From here you can search these documents. Enter
+                            your search terms below.
+                        </p>
+                        <form role="form">
+                            <div class="form-group">
+                                <input type="text" class="form-control" placeholder="Search..." id="mkdocs-search-query">
+                            </div>
+                        </form>
+                        <div id="mkdocs-search-results"></div>
+                    </div>
+                    <div class="modal-footer">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </body>
+</html>
+
+<!--
+MkDocs version : 0.15.3
+Build Date UTC : 2016-10-16 05:47:54.661998
+-->
