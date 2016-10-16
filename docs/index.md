@@ -132,53 +132,53 @@ Pull requests and filing issues are encouraged.
 
 2. Create a local clone of your fork.
 
-    ```bash
-    $ git clone https://github.com/YOUR-USERNAME/pyflo
-    Cloning into `pyflo`...
-    remote: Counting objects: 10, done.
-    remote: Compressing objects: 100% (8/8), done.
-    remove: Total 10 (delta 1), reused 10 (delta 1)
-    Unpacking objects: 100% (10/10), done.
-    ```
+        ```bash
+        $ git clone https://github.com/YOUR-USERNAME/pyflo
+        Cloning into `pyflo`...
+        remote: Counting objects: 10, done.
+        remote: Compressing objects: 100% (8/8), done.
+        remove: Total 10 (delta 1), reused 10 (delta 1)
+        Unpacking objects: 100% (10/10), done.
+        ```
 
 3. Add the original as a remote repository named `upstream`.
 
-    ```bash
-    $ git remote add upstream https://github.com/benjiyamin/pyflo.git
-    $ git remote -v
-    origin    https://github.com/YOUR-USERNAME/pyflo.git (fetch)
-    origin    https://github.com/YOUR-USERNAME/pyflo.git (push)
-    upstream  https://github.com/benjiyamin/pyflo.git (fetch)
-    upstream  https://github.com/benjiyamin/pyflo.git (push)
-    ```
+        ```bash
+        $ git remote add upstream https://github.com/benjiyamin/pyflo.git
+        $ git remote -v
+        origin    https://github.com/YOUR-USERNAME/pyflo.git (fetch)
+        origin    https://github.com/YOUR-USERNAME/pyflo.git (push)
+        upstream  https://github.com/benjiyamin/pyflo.git (fetch)
+        upstream  https://github.com/benjiyamin/pyflo.git (push)
+        ```
 
 4. Fetch the current upstream repository branches and commits.
 
-    ```bash
-    $ git fetch upstream
-    remote: Counting objects: 75, done.
-    remote: Compressing objects: 100% (53/53), done.
-    remote: Total 62 (delta 27), reused 44 (delta 9)
-    Unpacking objects: 100% (62/62), done.
-    From https://github.com/benjiyamin/pyflo
-     * [new branch]      master     -> upstream/master
-    ```
+        ```bash
+        $ git fetch upstream
+        remote: Counting objects: 75, done.
+        remote: Compressing objects: 100% (53/53), done.
+        remote: Total 62 (delta 27), reused 44 (delta 9)
+        Unpacking objects: 100% (62/62), done.
+        From https://github.com/benjiyamin/pyflo
+         * [new branch]      master     -> upstream/master
+        ```
 
 5. Checkout your local `master` branch and sync `upstream/master` to it, without losing local changes.
 
-    ```bash
-    $ git checkout master
-    Switched to branch 'master'
-    
-    $ git merge upstream/master
-    ```
+        ```bash
+        $ git checkout master
+        Switched to branch 'master'
+        
+        $ git merge upstream/master
+        ```
 
 6. Commit your local changes and push to `upstream/master`.
 
-    ```bash
-    $ git commit -m 'Add some feature'
-    $ git push upstream master
-    ```
+        ```bash
+        $ git commit -m 'Add some feature'
+        $ git push upstream master
+        ```
 
 7. Submit a pull request. =)
 
