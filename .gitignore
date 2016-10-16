@@ -8,4 +8,5 @@ vdev/
 .idea
 scripts/
 archive/
+site/
 requirements-dev.txt

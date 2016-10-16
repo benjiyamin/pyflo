@@ -1,4 +1,5 @@
 site_name: PyFlo
+repo_url: https://github.com/benjiyamin/pyflo/
 pages:
 - Home: index.md
 - Authors: authors.md
