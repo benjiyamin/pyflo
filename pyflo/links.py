@@ -90,7 +90,7 @@ class Reach(Link):
     def long_slope(self):
         return self.drop / self.length
 
-    def normal_velocity(self, depth):
+    def velocity_normal(self, depth):
         """Get the velocity of a partial flow section, given a depth from the invert.
 
         Args:
@@ -103,7 +103,7 @@ class Reach(Link):
         r_h = self.section.hyd_radius(depth)
         return constants.K_MANNING * r_h**(2.0/3.0) * self.long_slope**0.5 / self.section.n
 
-    def normal_flow(self, depth):
+    def flow_normal(self, depth):
         """Get the flow of a partial flow section, given a depth from the invert.
 
         Args:
@@ -114,7 +114,7 @@ class Reach(Link):
 
         """
         a_f = self.section.flow_area(depth)
-        vel = self.normal_velocity(depth)
+        vel = self.velocity_normal(depth)
         return a_f * vel
 
     def froude_number(self, velocity):
@@ -129,6 +129,25 @@ class Reach(Link):
         """
         b = math.sqrt(constants.G * self.length)
         return velocity / b
+
+    def shear_stress(self, depth, method='average'):
+        """Get the shear stress along the lining of the reach.
+
+        Args:
+            depth (float): In :math:`feet`.
+            method: The options are `'average'` and `'maximum'`.
+
+        Returns:
+            float: : The shear stress, in :math:`pounds/feet^2`.
+
+        """
+        if method == 'average':
+            b = self.section.hyd_radius(depth)
+        elif method == 'maximum':
+            b = depth
+        else:
+            raise ValueError("Either 'average' or 'maximum' must be defined for the method arg.")
+        return constants.SG_WATER * b * self.long_slope  # Replace or add option for energy slope
 
     def depth_critical_accuracy(self, depth, flow):
         """Check solution convergence for critical depth given a trial value.
@@ -220,7 +239,7 @@ class Reach(Link):
         a_f = self.section.flow_area(depth)
         vel = flow / a_f
         r_h = self.section.hyd_radius(depth)
-        a = vel**2.0 * pow(self.section.n, 2.0)
+        a = vel**2.0 * self.section.n**2.0
         b = constants.K_MANNING**2.0 * r_h**(4.0/3.0)
         return max(a / b, 0.0)
 
@@ -280,7 +299,7 @@ class Reach(Link):
             float: The difference between hydraulic and hydrology flow.
 
         """
-        q_h = self.normal_flow(depth)
+        q_h = self.flow_normal(depth)
         return q_h - flow
 
     def depth_normal(self, flow):
@@ -298,7 +317,7 @@ class Reach(Link):
         """
 
         if self.section.rise:
-            q_h = self.normal_flow(self.section.rise)
+            q_h = self.flow_normal(self.section.rise)
             if flow / q_h > 1.0:
                 return self.section.rise
         for i in range(1, 100):
@@ -359,7 +378,7 @@ class Reach(Link):
         hgl_upper_2 = self.headwater(hgl_lower, flow)
         return max(hgl_upper_1, hgl_upper_2)
 
-    def egl_upper(self, depth, flow):
+    def energy_upper(self, depth, flow):
         """Get the total energy elevation at the upstream end.
 
         Args:
@@ -375,7 +394,7 @@ class Reach(Link):
         z_1 = self.invert_1
         return z_1 + y_1 + h_v
 
-    def egl_lower(self, depth, tw, flow):
+    def energy_lower(self, depth, tw, flow):
         """Get the total energy elevation at the downstream end.
 
         Args:
@@ -392,10 +411,6 @@ class Reach(Link):
         z_2 = self.invert_2
         h_f1 = self.friction_loss(depth, flow)
         h_f2 = self.friction_loss(y_2, flow)
-        # s_f1 = self.friction_slope(depth, flow)
-        # s_f2 = self.friction_slope(y_2, flow)
-        # s_f = (s_f1 + s_f2) / 2.0
-        # h_f = self.length * s_f
         h_f = (h_f1+h_f2) / 2.0
         h_m1 = self.minor_loss(depth, flow)
         h_m2 = self.minor_loss(y_2, flow)
@@ -415,8 +430,8 @@ class Reach(Link):
 
         """
         depth = hw - self.invert_1
-        e_upper = self.egl_upper(depth, flow)
-        e_lower = self.egl_lower(depth, tw, flow)
+        e_upper = self.energy_upper(depth, flow)
+        e_lower = self.energy_lower(depth, tw, flow)
         return e_upper - e_lower
 
     def headwater(self, tw, flow):
@@ -453,7 +468,7 @@ class Reach(Link):
                     b=bounds_1[1],
                     args=(tw, flow)
                 )
-            except:
+            except ValueError:
                 hw = optimize.bisect(
                     f=self.headwater_accuracy,
                     a=bounds_2[0],
@@ -465,8 +480,8 @@ class Reach(Link):
 
     def flow_accuracy(self, flow, hw, tw):
         depth = hw - self.invert_1
-        e_upper = self.egl_upper(depth, flow)
-        e_lower = self.egl_lower(depth, tw, flow)
+        e_upper = self.energy_upper(depth, flow)
+        e_lower = self.energy_lower(depth, tw, flow)
         return e_upper - e_lower
 
     def flow(self, stage_1, stage_2):
@@ -476,7 +491,7 @@ class Reach(Link):
             d_trial = i
             if self.section.rise:
                 d_trial *= self.section.rise
-            q_trial = self.normal_flow(d_trial)
+            q_trial = self.flow_normal(d_trial)
             if self.flow_accuracy(q_trial, hw, tw) > 1.0:
                 flow = optimize.bisect(
                     f=self.flow_accuracy,
