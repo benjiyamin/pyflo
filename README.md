@@ -186,7 +186,7 @@ $ git push upstream master
 ##### 7) Submit a pull request. =)
 
 For a list of contributors who have participated in this project,
-check out [AUTHORS](authors.md).
+check out [AUTHORS](AUTHORS.md).
 
 ## Testing
 
@@ -198,4 +198,4 @@ $ python tests.py
 
 ## License
 
-This project is licensed under GPL 3.0 - see [LICENSE](license.md) for details.
+This project is licensed under GPL 3.0 - see [LICENSE](LICENSE.md) for details.
