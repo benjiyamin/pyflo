@@ -5,11 +5,9 @@
 
 """
 
-import math
+import numpy
 
-from scipy import interpolate
-
-from pyflo import distributions, basins
+from pyflo import basins, distributions
 
 
 class Basin(basins.Basin):
@@ -21,8 +19,7 @@ class Basin(basins.Basin):
             area (float): The delineated region concentrating to a point, in :math:`acres`.
             cn (float): An empirical parameter for predicting direct runoff.
             tc (float): The estimated time of concentration, in :math:`minutes`.
-            runoff_dist (distributions.Distribution): The unscaled unit hydrograph runoff
-                distribution.
+            runoff_dist (numpy.ndarray): The unscaled unit hydrograph runoff distribution.
             peak_factor (float): A value for scaling peak runoff.
 
         """
@@ -89,22 +86,14 @@ class Basin(basins.Basin):
         """Generate incremental amount of runoff generated from rainfall
 
         Args:
-            rain_dist (distributions.Distribution): The hydrograph with scaled rainfall data.
+            rain_dist (numpy.ndarray): The hydrograph with scaled rainfall data.
             interval (float): The amount of time the output will increment by.
 
         Yields:
             float: The next incremental amount of runoff generated from rainfall.
 
         """
-        data_rainfall = rain_dist.data
-        duration = data_rainfall[-1][0]
-        time_steps = math.ceil(duration / interval)
-        x_col, y_col = zip(*data_rainfall)
-        fill_value = y_col[0], y_col[-1]
-        y_interp = interpolate.interp1d(x_col, y_col, bounds_error=False, fill_value=fill_value)
-        x_new = [time_step * interval for time_step in range(time_steps + 1)]
-        y_new = y_interp(x_new)
-        pairs = list(zip(x_new, y_new))
+        pairs = distributions.increment(rain_dist, interval).tolist()
         for pair_1, pair_2 in zip(pairs, pairs[1:]):
             time_1, rainfall_1 = pair_1
             time_2, rainfall_2 = pair_2
@@ -113,18 +102,32 @@ class Basin(basins.Basin):
             runoff_delta = runoff_2 - runoff_1
             yield runoff_delta
 
+    def unit_hydrograph(self, interval):
+        """Get a hydrograph that represents the time-flow relationship per unit (inch) of depth.
+
+        Args:
+            interval (float): The amount of time the output will increment by.
+
+        Returns:
+            numpy.ndarray: The hydrograph of potential basin runoff.
+
+        """
+        hydrograph = self.runoff_dist * [self.peak_time, self.peak_runoff]
+        hydrograph = distributions.increment(hydrograph, interval)
+        return hydrograph
+
     def flood_data(self, rain_dist, interval):
         """Generate pairs of basin runoff flow generated from rainfall over time.
 
         Args:
-            rain_dist (distributions.Distribution): The hydrograph with scaled rainfall data.
+            rain_dist (numpy.ndarray): The hydrograph with scaled rainfall data.
             interval (float): The amount of time the output will increment by.
 
         Yields:
             Tuple[float, float]: The next pair of time and runoff flow generated from rainfall.
 
         """
-        rd = list(self.runoff_data(x_delta=interval))
+        rd = self.unit_hydrograph(interval).tolist()
         ri = list(self.runoff_depth_incremental(rain_dist, interval))
         ri.reverse()  # Reversed list utilized for synthesis
         comp_length = len(rd) + len(ri)
@@ -138,15 +141,15 @@ class Basin(basins.Basin):
         """Get a composite hydrograph of basin runoff generated from rainfall over time.
 
         Args:
-            rain_dist (distributions.Distribution): The hydrograph with scaled rainfall data.
+            rain_dist (numpy.ndarray): The hydrograph with scaled rainfall data.
             interval (float): The amount of time the output will increment by.
 
         Returns:
-            distributions.Distribution: The composite hydrograph of runoff generated from rainfall.
+            numpy.ndarray: The composite hydrograph of runoff generated from rainfall.
 
         """
         data = list(self.flood_data(rain_dist, interval))
-        hydrograph = distributions.Distribution(data)
+        hydrograph = numpy.array(data)
         return hydrograph
 
     @property
@@ -158,9 +161,3 @@ class Basin(basins.Basin):
     @property
     def peak_runoff(self):
         return self.peak_factor * self.area / self.peak_time  # cfs
-
-    def runoff_data(self, **kwargs):
-        return self.runoff_dist.data_scaled_by(self.peak_time, self.peak_runoff, **kwargs)
-
-    def runoff_hydrograph(self, **kwargs):
-        return self.runoff_dist.scaled_by(self.peak_time, self.peak_runoff, **kwargs)

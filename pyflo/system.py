@@ -9,6 +9,8 @@ import csv
 import os
 from typing import List, Tuple
 
+import numpy
+
 
 def tuple_list_from_csv(filename):
     """Open a csv file and get a list of tuples that represents the data.
@@ -34,6 +36,21 @@ def tuple_list_from_csv(filename):
         open_file.close()
         return tuple_list
     raise IOError
+
+
+def array_from_csv(filename):
+    """Open a csv file and get a numpy array that represents the data.
+
+    Args:
+        filename (str): The name of the file to open.
+
+    Returns:
+        numpy.ndarray: a numpy array representing the data.
+
+    """
+    data = tuple_list_from_csv(filename)
+    array = numpy.array(data)
+    return array
 
 
 def csv_from_tuple_list(filename, data):

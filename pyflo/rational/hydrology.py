@@ -5,12 +5,11 @@
 
 """
 
-import math
 from typing import List, Tuple
 
-from scipy import interpolate
+import numpy
 
-from pyflo import distributions, constants, basins
+from pyflo import constants, basins, distributions
 
 
 class Basin(basins.Basin):
@@ -52,22 +51,14 @@ class Basin(basins.Basin):
         """Generate pairs of basin runoff flow generated from rainfall over time.
 
         Args:
-            rain_dist (distributions.Distribution): The hydrograph with scaled rainfall data.
+            rain_dist (numpy.ndarray): The hydrograph with scaled rainfall data.
             interval (float): The amount of time the output will increment by.
 
         Yields:
             Tuple[float, float]: The next pair of time and runoff flow generated from rainfall.
 
         """
-        data_rainfall = rain_dist.data
-        duration = data_rainfall[-1][0]
-        time_steps = math.ceil(duration / interval)
-        x_col, y_col = zip(*data_rainfall)
-        fill_value = y_col[0], y_col[-1]
-        y_interp = interpolate.interp1d(x_col, y_col, bounds_error=False, fill_value=fill_value)
-        x_new = [step * interval for step in range(time_steps + 1)]
-        y_new = y_interp(x_new)
-        for time, rainfall in zip(x_new, y_new):
+        for time, rainfall in distributions.increment(rain_dist, interval).tolist():
             intensity = rainfall / time
             flow = intensity * self.runoff_area * constants.K_RATIONAL
             yield time, flow
@@ -76,14 +67,13 @@ class Basin(basins.Basin):
         """Get a composite hydrograph of basin runoff generated from rainfall over time.
 
         Args:
-            rain_dist (distributions.Distribution): The hydrograph with scaled rainfall data.
+            rain_dist (numpy.ndarray): The hydrograph with scaled rainfall data.
             interval (float): The amount of time the output will increment by.
 
         Returns:
-            distributions.Distribution: The composite hydrograph of runoff flow generated from
-                rainfall.
+            numpy.ndarray: The composite hydrograph of runoff generated from rainfall.
 
         """
-        pairs = self.flood_data(rain_dist, interval)
-        hydrograph = distributions.Distribution(list(pairs))
+        data = list(self.flood_data(rain_dist, interval))
+        hydrograph = numpy.array(data)
         return hydrograph

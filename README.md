@@ -28,16 +28,13 @@ $ pip install -r requirements.txt
 
 ## Examples
 
-### Runoff Hydrograph
-
-From [NEH Hydrology Ch. 16, Ex. 16-1](http://www.wcc.nrcs.usda.gov/ftpref/wntsc/H&H/NEHhydrology/ch16.pdf#page=15):
+### From [NEH Hydrology Ch. 16, Ex. 16-1](http://www.wcc.nrcs.usda.gov/ftpref/wntsc/H&H/NEHhydrology/ch16.pdf#page=15):
 
 ```python
-from pyflo import system, distributions
+from pyflo import system
 from pyflo.nrcs import hydrology
 
-runoff_dist = system.tuple_list_from_csv('./resources/distributions/runoff/scs484.csv')
-uh484 = distributions.Distribution(runoff_dist)
+uh484 = system.array_from_csv('./resources/distributions/runoff/scs484.csv')
 basin = hydrology.Basin(
     area=4.6,
     cn=85.0,
@@ -45,9 +42,84 @@ basin = hydrology.Basin(
     runoff_dist=uh484,
     peak_factor=484.0
 )
-
-runoff_hydrograph = basin.runoff_hydrograph(x_step=0.1)
 ```
+#### Unit Hydrograph
+
+With PyFlo, it's fairly simple to create a unit hydrograph, which represents the time-flow 
+relationship per unit (inch) of depth.
+
+```python
+runoff_hydrograph = basin.unit_hydrograph(interval=0.3)
+```
+
+We can use `matplotlib` to plot the example results:
+
+```python
+from matplotlib import pyplot
+
+x = runoff_hydrograph[:, 0]
+y = runoff_hydrograph[:, 1]
+pyplot.plot(x, y, 'k')
+pyplot.plot(x, y, 'bo')
+pyplot.title(r'Runoff Hydrograph from Example 16-1')
+pyplot.xlabel(r'Time ($hr$)')
+pyplot.ylabel(r'Discharge ($\frac{ft^{3}}{s}$)')
+pyplot.show()
+```
+
+![Runoff Hydrograph](docs/img/runoff_hydrograph_16-1.png "Runoff Hydrograph")
+
+#### Flood Hydrograph
+
+A flood hydrograph can be generated, which is a time-flow relationship synthesized from basin 
+and rainfall properties.
+
+```python
+import numpy
+
+rainfall_dist = numpy.array([
+    (0.00, 0.000),
+    (0.05, 0.074),
+    (0.10, 0.174),
+    (0.15, 0.280),
+    (0.20, 0.378),
+    (0.25, 0.448),
+    (0.30, 0.496),
+    (0.35, 0.526),
+    (0.40, 0.540),
+    (0.45, 0.540),
+    (0.50, 0.540),
+    (0.55, 0.542),
+    (0.60, 0.554),
+    (0.65, 0.582),
+    (0.70, 0.640),
+    (0.75, 0.724),
+    (0.80, 0.816),
+    (0.85, 0.886),
+    (0.90, 0.940),
+    (0.95, 0.980),
+    (1.00, 1.000)
+])
+rainfall_hydrograph = rainfall_dist * [6.0, 5.0]
+flood_hydrograph = basin.flood_hydrograph(rainfall_hydrograph, interval=0.3)
+```
+
+We can use `matplotlib` to plot the example results:
+
+```python
+from matplotlib import pyplot
+
+x = flood_hydrograph[:, 0]
+y = flood_hydrograph[:, 1]
+pyplot.plot(x, y, 'k')
+pyplot.plot(x, y, 'bo')
+pyplot.title(r'Flood Hydrograph from Example 16-1')
+pyplot.xlabel(r'Time ($hr$)')
+pyplot.ylabel(r'Discharge ($\frac{ft^{3}}{s}$)')
+pyplot.show()
+```
+
+![Flood Hydrograph](docs/img/flood_hydrograph_16-1.png "Flood Hydrograph")
 
 ## Contributing
 
@@ -58,63 +130,63 @@ Pull requests and filing issues are encouraged.
 
 To start contributing with the PyFlo repository:
 
-1. Fork it!
+##### 1) Fork it!
 
-2. Create a local clone of your fork.
+##### 2) Create a local clone of your fork.
 
-    ```bash
-    $ git clone https://github.com/YOUR-USERNAME/pyflo
-    Cloning into `pyflo`...
-    remote: Counting objects: 10, done.
-    remote: Compressing objects: 100% (8/8), done.
-    remove: Total 10 (delta 1), reused 10 (delta 1)
-    Unpacking objects: 100% (10/10), done.
-    ```
+```bash
+$ git clone https://github.com/YOUR-USERNAME/pyflo
+Cloning into `pyflo`...
+remote: Counting objects: 10, done.
+remote: Compressing objects: 100% (8/8), done.
+remove: Total 10 (delta 1), reused 10 (delta 1)
+Unpacking objects: 100% (10/10), done.
+```
 
-3. Add the original as a remote repository named `upstream`.
+##### 3) Add the original as a remote repository named `upstream`.
 
-    ```bash
-    $ git remote add upstream https://github.com/benjiyamin/pyflo.git
-    $ git remote -v
-    origin    https://github.com/YOUR-USERNAME/pyflo.git (fetch)
-    origin    https://github.com/YOUR-USERNAME/pyflo.git (push)
-    upstream  https://github.com/benjiyamin/pyflo.git (fetch)
-    upstream  https://github.com/benjiyamin/pyflo.git (push)
-    ```
+```bash
+$ git remote add upstream https://github.com/benjiyamin/pyflo.git
+$ git remote -v
+origin    https://github.com/YOUR-USERNAME/pyflo.git (fetch)
+origin    https://github.com/YOUR-USERNAME/pyflo.git (push)
+upstream  https://github.com/benjiyamin/pyflo.git (fetch)
+upstream  https://github.com/benjiyamin/pyflo.git (push)
+```
 
-4. Fetch the current upstream repository branches and commits.
+##### 4) Fetch the current upstream repository branches and commits.
 
-    ```bash
-    $ git fetch upstream
-    remote: Counting objects: 75, done.
-    remote: Compressing objects: 100% (53/53), done.
-    remote: Total 62 (delta 27), reused 44 (delta 9)
-    Unpacking objects: 100% (62/62), done.
-    From https://github.com/benjiyamin/pyflo
-     * [new branch]      master     -> upstream/master
-    ```
+```bash
+$ git fetch upstream
+remote: Counting objects: 75, done.
+remote: Compressing objects: 100% (53/53), done.
+remote: Total 62 (delta 27), reused 44 (delta 9)
+Unpacking objects: 100% (62/62), done.
+From https://github.com/benjiyamin/pyflo
+ * [new branch]      master     -> upstream/master
+```
 
-5. Checkout your local `master` branch and sync `upstream/master` to it, without losing 
+##### 5) Checkout your local `master` branch and sync `upstream/master` to it, without losing 
 local changes.
 
-    ```bash
-    $ git checkout master
-    Switched to branch 'master'
-    
-    $ git merge upstream/master
-    ```
+```bash
+$ git checkout master
+Switched to branch 'master'
 
-6. Commit your local changes and push to `upstream/master`.
+$ git merge upstream/master
+```
 
-    ```bash
-    $ git commit -m 'Add some feature'
-    $ git push upstream master
-    ```
+##### 6) Commit your local changes and push to `upstream/master`.
 
-7. Submit a pull request :D
+```bash
+$ git commit -m 'Add some feature'
+$ git push upstream master
+```
+
+##### 7) Submit a pull request. =)
 
 For a list of contributors who have participated in this project,
-check out [AUTHORS.md](AUTHORS.md).
+check out [AUTHORS](authors.md).
 
 ## Testing
 
@@ -126,4 +198,4 @@ $ python tests.py
 
 ## License
 
-This project is licensed under GPL 2.0 - see [LICENSE.md](LICENSE.md) for details.
+This project is licensed under GPL 3.0 - see [LICENSE](license.md) for details.

@@ -4,6 +4,8 @@ __pycache__/
 *$py.class
 
 venv/
+vdev/
 .idea
 scripts/
 archive/
+requirements-dev.txt

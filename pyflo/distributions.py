@@ -7,10 +7,10 @@
 
 
 import math
-from typing import List, Tuple
 
 import simpleeval
 from scipy import interpolate
+import numpy
 
 
 EVAL_FUNCS = {
@@ -52,89 +52,6 @@ EVAL_FUNCS = {
     'tanh': math.tanh,
     'trunc': math.trunc,
 }
-
-
-class Distribution(object):
-
-    def __init__(self, data):
-        """A scalable and ordered 2-column relationship of data.
-
-        Args:
-            data (List[Tuple[float, float]]): A list of pairs, scaled or unscaled.
-
-        Raises:
-            ValueError: If any of the values within the tuples of data are negative.
-
-        """
-        data = sorted(data, key=lambda line: line[0])
-        x_col = [ratio[0] for ratio in data]
-        if x_col[0] < 0.0:
-            raise ValueError('First column values in data must all be positive numbers.')
-        self.data = data
-
-    def get_y(self, x):
-        """Get the corresponding value from the second column of the distribution, interpolated if
-        needed.
-
-        Args:
-            x (float): A value in the first column.
-
-        Returns:
-            float: The corresponding value from the second column.
-
-        Raises:
-            ValueError: If the time_ratio is negative.
-
-        """
-        if x < 0.0:
-            raise ValueError('Defined first column value must be positive number.')
-        x_col, y_col = zip(*self.data)
-        fill_value = y_col[0], y_col[-1]
-        y_interp = interpolate.interp1d(x_col, y_col, bounds_error=False, fill_value=fill_value)
-        return y_interp(x)
-
-    def data_scaled_by(self, x, y, **kwargs):
-        """Generate pairs where each value is scaled by a defined amount.
-
-        Args:
-            x (float): The value to multiply members of the first column by.
-            y (float): The value to multiply members of the second column by.
-
-        Yields:
-            Tuple[float, float]: The next scaled pair.
-
-        """
-        x_step = kwargs.pop('x_step', None)
-        x_delta = kwargs.pop('x_delta', None)
-        if x_step or x_delta:
-            if not x_step:
-                x_step = float(x_delta) / x
-            x_last = self.data[-1][0]
-            x_steps = math.ceil(x_last / x_step)
-            for step in range(x_steps + 1):
-                x_curr = step * x_step
-                x_new = x_curr * x
-                y_curr = self.get_y(x_curr)
-                y_new = y * y_curr
-                yield x_new, y_new
-        else:
-            for x_curr, y_curr in self.data:
-                yield x_curr * x, y_curr * y
-
-    def scaled_by(self, x, y, **kwargs):
-        """Get a new distribution with ordered pairs where each value is scaled by a defined amount.
-
-        Args:
-            x (float): The value to multiply members of the first column by.
-            y (float): The value to multiply members of the second column by.
-
-        Returns:
-            Distribution: The new, scaled distribution.
-
-        """
-        data_new = list(self.data_scaled_by(x, y, **kwargs))
-        dist_new = Distribution(data_new)
-        return dist_new
 
 
 class Evaluator(object):
@@ -210,9 +127,19 @@ class Evaluator(object):
                 value before between evaluation and storing to 2nd column. Default is false.
 
         Returns:
-            Distribution: The generated distribution.
+            numpy.ndarray: The generated distribution.
 
         """
         data_new = list(self.get_data(x_max, x_delta, product))
-        dist_new = Distribution(data_new)
+        dist_new = numpy.array(data_new)
         return dist_new
+
+
+def increment(array, interval):
+    x_col = array[:, 0]
+    y_col = array[:, 1]
+    fill_value = y_col[0], y_col[-1]
+    y_interp = interpolate.interp1d(x_col, y_col, bounds_error=False, fill_value=fill_value)
+    x_new = numpy.arange(x_col[0], x_col[-1] + interval, interval)
+    y_new = y_interp(x_new)
+    return numpy.column_stack((x_new, y_new))

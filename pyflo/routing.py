@@ -11,7 +11,7 @@ from typing import List, Tuple, Dict
 import numpy as np
 from scipy import optimize, interpolate
 
-from pyflo import build, links, networks, distributions
+from pyflo import build, links, networks
 
 
 class Tailwater(object):

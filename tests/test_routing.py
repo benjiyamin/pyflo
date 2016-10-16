@@ -1,7 +1,9 @@
 
 import unittest
 
-from pyflo import networks, system, sections, routing, distributions
+import numpy
+
+from pyflo import networks, system, sections, routing
 from pyflo.nrcs import hydrology
 
 
@@ -77,8 +79,7 @@ class BleedDownTest(unittest.TestCase):
 class BasinTest(unittest.TestCase):
 
     def setUp(self):
-        runoff_dist = system.tuple_list_from_csv('./resources/distributions/runoff/scs484.csv')
-        self.uh484 = distributions.Distribution(runoff_dist)
+        self.uh484 = system.array_from_csv('./resources/distributions/runoff/scs484.csv')
         self.basin = hydrology.Basin(
             area=4.6,
             cn=85.0,
@@ -120,93 +121,27 @@ class BasinTest(unittest.TestCase):
         control = 1455.0
         self.assertAlmostEqual(data, control, -1)
 
-    def test_runoff_hydrograph_by_step(self):
-        peak_time = 1.53
-        peak_runoff = 1455.0
-        # self.uh484.plot()
-        hydrograph = self.uh484.scaled_by(x=peak_time, y=peak_runoff, x_step=0.1)
-        # hydrograph.plot()
-        data = hydrograph.data
-        data = [(round(line[0], 3), round(line[1], 0)) for line in data]
-        control = [
-            (0.000, 0.0),
-            (0.153, 44.0),
-            (0.306, 146.0),
-            (0.459, 276.0),
-            (0.612, 451.0),
-            (0.765, 684.0),
-            (0.918, 960.0),
-            (1.071, 1193.0),
-            (1.224, 1353.0),
-            (1.377, 1440.0),
-            (1.530, 1455.0),
-            (1.683, 1440.0),
-            (1.836, 1353.0),
-            (1.989, 1251.0),
-            (2.142, 1135.0),
-            (2.295, 989.0),
-            (2.448, 815.0),
-            (2.601, 669.0),
-            (2.754, 567.0),
-            (2.907, 480.0),
-            (3.060, 407.0),
-            (3.213, 354.0),
-            (3.366, 301.0),
-            (3.519, 258.0),
-            (3.672, 214.0),
-            (3.825, 185.0),
-            (3.978, 156.0),
-            (4.131, 134.0),
-            (4.284, 112.0),
-            (4.437, 96.0),
-            (4.590, 80.0),
-            (4.743, 69.0),
-            (4.896, 58.0),
-            (5.049, 50.0),
-            (5.202, 42.0),
-            (5.355, 36.0),
-            (5.508, 31.0),
-            (5.661, 26.0),
-            (5.814, 22.0),
-            (5.967, 19.0),
-            (6.120, 16.0),
-            (6.273, 14.0),
-            (6.426, 13.0),
-            (6.579, 11.0),
-            (6.732, 9.0),
-            (6.885, 7.0),
-            (7.038, 6.0),
-            (7.191, 4.0),
-            (7.344, 3.0),
-            (7.497, 1.0),
-            (7.650, 0.0)
-        ]
-        self.assertListEqual(data, control)
-
-    def test_runoff_hydrograph_by_interval(self):
-        peak_time = 1.53
-        peak_runoff = 1455.0
-        hydrograph = self.uh484.scaled_by(x=peak_time, y=peak_runoff, x_delta=0.3)
-        data = hydrograph.data
-        data = [(round(line[0], 1), round(line[1], 0)) for line in data]
+    def test_unit_hydrograph_by_interval(self):
+        hydrograph = self.basin.unit_hydrograph(interval=0.3)
+        data = [(round(line[0], 1), round(line[1], 0)) for line in hydrograph.tolist()]
         control = [
             (0.0, 0.0),
-            (0.3, 142.0),
-            (0.6, 437.0),
-            (0.9, 928.0),
-            (1.2, 1328.0),
-            (1.5, 1452.0),
-            (1.8, 1374.0),
-            (2.1, 1167.0),
-            (2.4, 870.0),
-            (2.7, 603.0),
-            (3.0, 436.0),
-            (3.3, 324.0),
-            (3.6, 234.0),
-            (3.9, 171.0),
-            (4.2, 124.0),
-            (4.5, 89.0),
-            (4.8, 65.0),
+            (0.3, 141.0),
+            (0.6, 435.0),
+            (0.9, 923.0),
+            (1.2, 1323.0),
+            (1.5, 1449.0),
+            (1.8, 1373.0),
+            (2.1, 1168.0),
+            (2.4, 873.0),
+            (2.7, 606.0),
+            (3.0, 438.0),
+            (3.3, 326.0),
+            (3.6, 236.0),
+            (3.9, 172.0),
+            (4.2, 125.0),
+            (4.5, 90.0),
+            (4.8, 66.0),
             (5.1, 48.0),
             (5.4, 35.0),
             (5.7, 25.0),
@@ -215,16 +150,15 @@ class BasinTest(unittest.TestCase):
             (6.6, 11.0),
             (6.9, 7.0),
             (7.2, 4.0),
-            (7.5, 1.0),
+            (7.5, 2.0),
             (7.8, 0.0)
         ]
         self.assertListEqual(data, control)
 
     def test_rainfall_hydrograph(self):
-        rainfall_dist = distributions.Distribution(self.ratio_pairs)
-        hydrograph = rainfall_dist.scaled_by(x=6.0, y=5.0)
-        data = hydrograph.data
-        data = [(round(line[0], 1), round(line[1], 2)) for line in data]
+        rainfall_dist = numpy.array(self.ratio_pairs)
+        hydrograph = rainfall_dist * [6.0, 5.0]
+        data = [(round(line[0], 1), round(line[1], 2)) for line in hydrograph.tolist()]
         control = [
             (0.0, 0.00),
             (0.3, 0.37),
@@ -251,9 +185,9 @@ class BasinTest(unittest.TestCase):
         self.assertListEqual(data, control)
 
     def test_runoff_depth(self):
-        rainfall_dist = distributions.Distribution(self.ratio_pairs)
-        hydrograph = rainfall_dist.scaled_by(x=6.0, y=5.0)
-        data = hydrograph.data
+        rainfall_dist = numpy.array(self.ratio_pairs)
+        hydrograph = rainfall_dist * [6.0, 5.0]
+        data = hydrograph.tolist()
         rounded_data = []
         for line in data:
             runoff_depth = self.basin.runoff_depth(line[1])
@@ -284,9 +218,9 @@ class BasinTest(unittest.TestCase):
         self.assertListEqual(rounded_data, control)
 
     def test_runoff_depth_incremental(self):
-        rainfall_dist = distributions.Distribution(self.ratio_pairs)
-        rainfall_hydrograph = rainfall_dist.scaled_by(x=6.0, y=5.0)
-        data = self.basin.runoff_depth_incremental(rainfall_hydrograph, interval=0.3)
+        rainfall_dist = numpy.array(self.ratio_pairs)
+        hydrograph = rainfall_dist * [6.0, 5.0]
+        data = self.basin.runoff_depth_incremental(hydrograph, interval=0.3)
         data = [round(line, 2) for line in data]
         control = [
             0.00,
@@ -313,11 +247,10 @@ class BasinTest(unittest.TestCase):
         self.assertListEqual(data, control)
 
     def test_flood_hydrograph(self):
-        rainfall_dist = distributions.Distribution(self.ratio_pairs)
-        rainfall_hydrograph = rainfall_dist.scaled_by(x=6.0, y=5.0)
+        rainfall_dist = numpy.array(self.ratio_pairs)
+        rainfall_hydrograph = rainfall_dist * [6.0, 5.0]
         hydrograph = self.basin.flood_hydrograph(rainfall_hydrograph, interval=0.3)
-        # hydrograph.plot()
-        data = [(round(line[0], 1), round(line[1], 0)) for line in hydrograph.data]
+        data = [(round(line[0], 1), round(line[1], 0)) for line in hydrograph.tolist()]
         control = [
             (0.0, 0.0),
             (0.3, 0.0),
