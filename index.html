@@ -233,49 +233,60 @@ pyplot.show()
 <a href="https://www.python.org/dev/peps/pep-0008/">PEP 8</a> should always be adhered. Code should be
 documented with <a href="http://sphinxcontrib-napoleon.readthedocs.io/en/latest/example_google.html">Google style docstrings</a>.
 Pull requests and filing issues are encouraged.</p>
-<h4 id="to-start-contributing-with-the-pyflo-repository">To start contributing with the PyFlo repository:</h4>
-<h5 id="1-fork-it">1) Fork it!</h5>
-<h5 id="2-create-a-local-clone-of-your-fork">2) Create a local clone of your fork.</h5>
-<pre><code class="bash">$ git clone https://github.com/YOUR-USERNAME/pyflo
+<h3 id="to-start-contributing-with-the-pyflo-repository">To start contributing with the PyFlo repository:</h3>
+<ol>
+<li>
+<p>Fork it!</p>
+</li>
+<li>
+<p>Create a local clone of your fork.</p>
+<p><code>bash
+$ git clone https://github.com/YOUR-USERNAME/pyflo
 Cloning into `pyflo`...
 remote: Counting objects: 10, done.
 remote: Compressing objects: 100% (8/8), done.
 remove: Total 10 (delta 1), reused 10 (delta 1)
-Unpacking objects: 100% (10/10), done.
-</code></pre>
-
-<h5 id="3-add-the-original-as-a-remote-repository-named-upstream">3) Add the original as a remote repository named <code>upstream</code>.</h5>
-<pre><code class="bash">$ git remote add upstream https://github.com/benjiyamin/pyflo.git
+Unpacking objects: 100% (10/10), done.</code></p>
+</li>
+<li>
+<p>Add the original as a remote repository named <code>upstream</code>.</p>
+<p><code>bash
+$ git remote add upstream https://github.com/benjiyamin/pyflo.git
 $ git remote -v
 origin    https://github.com/YOUR-USERNAME/pyflo.git (fetch)
 origin    https://github.com/YOUR-USERNAME/pyflo.git (push)
 upstream  https://github.com/benjiyamin/pyflo.git (fetch)
-upstream  https://github.com/benjiyamin/pyflo.git (push)
-</code></pre>
-
-<h5 id="4-fetch-the-current-upstream-repository-branches-and-commits">4) Fetch the current upstream repository branches and commits.</h5>
-<pre><code class="bash">$ git fetch upstream
+upstream  https://github.com/benjiyamin/pyflo.git (push)</code></p>
+</li>
+<li>
+<p>Fetch the current upstream repository branches and commits.</p>
+<p><code>bash
+$ git fetch upstream
 remote: Counting objects: 75, done.
 remote: Compressing objects: 100% (53/53), done.
 remote: Total 62 (delta 27), reused 44 (delta 9)
 Unpacking objects: 100% (62/62), done.
 From https://github.com/benjiyamin/pyflo
- * [new branch]      master     -&gt; upstream/master
-</code></pre>
-
-<h5 id="5-checkout-your-local-master-branch-and-sync-upstreammaster-to-it-without-losing-local-changes">5) Checkout your local <code>master</code> branch and sync <code>upstream/master</code> to it, without losing local changes.</h5>
-<pre><code class="bash">$ git checkout master
-Switched to branch 'master'
-
-$ git merge upstream/master
-</code></pre>
-
-<h5 id="6-commit-your-local-changes-and-push-to-upstreammaster">6) Commit your local changes and push to <code>upstream/master</code>.</h5>
-<pre><code class="bash">$ git commit -m 'Add some feature'
-$ git push upstream master
-</code></pre>
-
-<h5 id="7-submit-a-pull-request">7) Submit a pull request. =)</h5>
+ * [new branch]      master     -&gt; upstream/master</code></p>
+</li>
+<li>
+<p>Checkout your local <code>master</code> branch and sync <code>upstream/master</code> to it, without losing local changes.</p>
+<p>```bash
+$ git checkout master
+Switched to branch 'master'</p>
+<p>$ git merge upstream/master
+```</p>
+</li>
+<li>
+<p>Commit your local changes and push to <code>upstream/master</code>.</p>
+<p><code>bash
+$ git commit -m 'Add some feature'
+$ git push upstream master</code></p>
+</li>
+<li>
+<p>Submit a pull request. =)</p>
+</li>
+</ol>
 <p>For a list of contributors who have participated in this project, check out <a href="authors/">AUTHORS</a>.</p>
 <h2 id="testing">Testing</h2>
 <p>Unit Testing is currently done using the built-in unittest module:</p>
@@ -331,5 +342,5 @@ $ git push upstream master
 
 <!--
 MkDocs version : 0.15.3
-Build Date UTC : 2016-10-16 14:04:20.387111
+Build Date UTC : 2016-10-16 21:16:09.342116
 -->
