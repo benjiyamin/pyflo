@@ -126,7 +126,7 @@ For developers, it's important to use common best practices when contributing to
 documented with [Google style docstrings](http://sphinxcontrib-napoleon.readthedocs.io/en/latest/example_google.html).
 Pull requests and filing issues are encouraged.
 
-### To start contributing with the PyFlo repository:
+#### To start contributing with the PyFlo repository:
 
 ##### 1) Fork it!
 
