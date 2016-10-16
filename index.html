@@ -240,48 +240,58 @@ Pull requests and filing issues are encouraged.</p>
 </li>
 <li>
 <p>Create a local clone of your fork.</p>
-<p><code>bash
+<pre><code>```bash
 $ git clone https://github.com/YOUR-USERNAME/pyflo
 Cloning into `pyflo`...
 remote: Counting objects: 10, done.
 remote: Compressing objects: 100% (8/8), done.
 remove: Total 10 (delta 1), reused 10 (delta 1)
-Unpacking objects: 100% (10/10), done.</code></p>
+Unpacking objects: 100% (10/10), done.
+```
+</code></pre>
 </li>
 <li>
 <p>Add the original as a remote repository named <code>upstream</code>.</p>
-<p><code>bash
+<pre><code>```bash
 $ git remote add upstream https://github.com/benjiyamin/pyflo.git
 $ git remote -v
 origin    https://github.com/YOUR-USERNAME/pyflo.git (fetch)
 origin    https://github.com/YOUR-USERNAME/pyflo.git (push)
 upstream  https://github.com/benjiyamin/pyflo.git (fetch)
-upstream  https://github.com/benjiyamin/pyflo.git (push)</code></p>
+upstream  https://github.com/benjiyamin/pyflo.git (push)
+```
+</code></pre>
 </li>
 <li>
 <p>Fetch the current upstream repository branches and commits.</p>
-<p><code>bash
+<pre><code>```bash
 $ git fetch upstream
 remote: Counting objects: 75, done.
 remote: Compressing objects: 100% (53/53), done.
 remote: Total 62 (delta 27), reused 44 (delta 9)
 Unpacking objects: 100% (62/62), done.
 From https://github.com/benjiyamin/pyflo
- * [new branch]      master     -&gt; upstream/master</code></p>
+ * [new branch]      master     -&gt; upstream/master
+```
+</code></pre>
 </li>
 <li>
 <p>Checkout your local <code>master</code> branch and sync <code>upstream/master</code> to it, without losing local changes.</p>
-<p>```bash
+<pre><code>```bash
 $ git checkout master
-Switched to branch 'master'</p>
-<p>$ git merge upstream/master
-```</p>
+Switched to branch 'master'
+
+$ git merge upstream/master
+```
+</code></pre>
 </li>
 <li>
 <p>Commit your local changes and push to <code>upstream/master</code>.</p>
-<p><code>bash
+<pre><code>```bash
 $ git commit -m 'Add some feature'
-$ git push upstream master</code></p>
+$ git push upstream master
+```
+</code></pre>
 </li>
 <li>
 <p>Submit a pull request. =)</p>
@@ -342,5 +352,5 @@ $ git push upstream master</code></p>
 
 <!--
 MkDocs version : 0.15.3
-Build Date UTC : 2016-10-16 21:16:09.342116
+Build Date UTC : 2016-10-16 21:23:44.336908
 -->
