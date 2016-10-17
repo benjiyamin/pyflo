@@ -41,7 +41,7 @@ class Weir(Link):
         self.k_orif = k_orif
         self.k_weir = k_weir
         self.section = section
-    
+
     def flow(self, stage_1, stage_2):
         flow = 0.0
         if self.section.rise:
@@ -168,7 +168,7 @@ class Reach(Link):
 
     def depth_critical(self, flow):
         """Goal seek a the critical depth in a open flow case.
-        
+
         Args:
             flow (float): Flow, in :math:`feet^3/second`.
 
@@ -197,7 +197,7 @@ class Reach(Link):
 
     def velocity_critical(self, flow):
         """Goal seek a the critical velocity in a open flow case.
-        
+
         Args:
             flow (float): Flow, in :math:`feet^3/second`.
 

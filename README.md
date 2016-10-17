@@ -1,4 +1,4 @@
-# Project PyFlo
+# Project Overview
 
 PyFlo is an open-source library written in Python for performing hydraulic and hydrology stormwater 
 analysis. Capabilities include network hydraulic grade analysis and time/iteration based storage and 
@@ -8,7 +8,7 @@ publications and resources. There are some GUI programs available that have simi
 The intent is that many will build from and contribute to the project, making it much more powerful 
 than a single person ever could.
 
-## Installation
+# Installation
 
 Installing the easy way, using pip:
 
@@ -24,9 +24,11 @@ $ source venv/bin/activate
 $ pip install -r requirements.txt
 ```
 
-## Examples
+# Examples
 
-### From [NEH Hydrology Ch. 16, Ex. 16-1](http://www.wcc.nrcs.usda.gov/ftpref/wntsc/H&H/NEHhydrology/ch16.pdf#page=15):
+## Hydrographs
+
+From [NEH Hydrology Ch. 16, Ex. 16-1](http://www.wcc.nrcs.usda.gov/ftpref/wntsc/H&H/NEHhydrology/ch16.pdf#page=15):
 
 ```python
 from pyflo import system
@@ -41,7 +43,7 @@ basin = hydrology.Basin(
     peak_factor=484.0
 )
 ```
-#### Unit Hydrograph
+### Unit Hydrograph
 
 With PyFlo, it's fairly simple to create a unit hydrograph, which represents the time-flow 
 relationship per unit (inch) of runoff depth.
@@ -65,9 +67,9 @@ pyplot.ylabel(r'Discharge ($\frac{ft^{3}}{s}$)')
 pyplot.show()
 ```
 
-![Unit Hydrograph](docs/img/unit_hydrograph_16-1.png "Unit Hydrograph")
+![Unit Hydrograph](./docs/img/unit_hydrograph_16-1.png "Unit Hydrograph")
 
-#### Flood Hydrograph
+### Flood Hydrograph
 
 A flood hydrograph can be generated, which is a time-flow relationship synthesized from basin 
 properties and a provided scaled rainfall distribution.
@@ -117,74 +119,64 @@ pyplot.ylabel(r'Discharge ($\frac{ft^{3}}{s}$)')
 pyplot.show()
 ```
 
-![Flood Hydrograph](docs/img/flood_hydrograph_16-1.png "Flood Hydrograph")
+![Flood Hydrograph](./docs/img/flood_hydrograph_16-1.png "Flood Hydrograph")
 
-## Contributing
+# Contributing
 
 For developers, it's important to use common best practices when contributing to the project.
 [PEP 8](https://www.python.org/dev/peps/pep-0008/) should always be adhered. Code should be
 documented with [Google style docstrings](http://sphinxcontrib-napoleon.readthedocs.io/en/latest/example_google.html).
 Pull requests and filing issues are encouraged.
 
-#### To start contributing with the PyFlo repository:
+To start contributing with the PyFlo repository:
 
-##### 1) Fork it!
+1. Fork it!
 
-##### 2) Create a local clone of your fork.
+2. Create a local clone of your fork.
+    
+        $ git clone https://github.com/YOUR-USERNAME/pyflo
+        Cloning into `pyflo`...
+        remote: Counting objects: 10, done.
+        remote: Compressing objects: 100% (8/8), done.
+        remove: Total 10 (delta 1), reused 10 (delta 1)
+        Unpacking objects: 100% (10/10), done.
 
-```bash
-$ git clone https://github.com/YOUR-USERNAME/pyflo
-Cloning into `pyflo`...
-remote: Counting objects: 10, done.
-remote: Compressing objects: 100% (8/8), done.
-remove: Total 10 (delta 1), reused 10 (delta 1)
-Unpacking objects: 100% (10/10), done.
-```
+3. Add the original as a remote repository named `upstream`.
 
-##### 3) Add the original as a remote repository named `upstream`.
+        $ git remote add upstream https://github.com/benjiyamin/pyflo.git
+        $ git remote -v
+        origin    https://github.com/YOUR-USERNAME/pyflo.git (fetch)
+        origin    https://github.com/YOUR-USERNAME/pyflo.git (push)
+        upstream  https://github.com/benjiyamin/pyflo.git (fetch)
+        upstream  https://github.com/benjiyamin/pyflo.git (push)
 
-```bash
-$ git remote add upstream https://github.com/benjiyamin/pyflo.git
-$ git remote -v
-origin    https://github.com/YOUR-USERNAME/pyflo.git (fetch)
-origin    https://github.com/YOUR-USERNAME/pyflo.git (push)
-upstream  https://github.com/benjiyamin/pyflo.git (fetch)
-upstream  https://github.com/benjiyamin/pyflo.git (push)
-```
+4. Fetch the current upstream repository branches and commits.
 
-##### 4) Fetch the current upstream repository branches and commits.
+        $ git fetch upstream
+        remote: Counting objects: 75, done.
+        remote: Compressing objects: 100% (53/53), done.
+        remote: Total 62 (delta 27), reused 44 (delta 9)
+        Unpacking objects: 100% (62/62), done.
+        From https://github.com/benjiyamin/pyflo
+         * [new branch]      master     -> upstream/master
 
-```bash
-$ git fetch upstream
-remote: Counting objects: 75, done.
-remote: Compressing objects: 100% (53/53), done.
-remote: Total 62 (delta 27), reused 44 (delta 9)
-Unpacking objects: 100% (62/62), done.
-From https://github.com/benjiyamin/pyflo
- * [new branch]      master     -> upstream/master
-```
+5. Checkout your local `master` branch and sync `upstream/master` to it, without losing local changes.
 
-##### 5) Checkout your local `master` branch and sync `upstream/master` to it, without losing local changes.
+        $ git checkout master
+        Switched to branch 'master'
+        
+        $ git merge upstream/master
 
-```bash
-$ git checkout master
-Switched to branch 'master'
+6. Commit your local changes and push to `upstream/master`.
 
-$ git merge upstream/master
-```
+        $ git commit -m 'Add some feature'
+        $ git push upstream master
 
-##### 6) Commit your local changes and push to `upstream/master`.
-
-```bash
-$ git commit -m 'Add some feature'
-$ git push upstream master
-```
-
-##### 7) Submit a pull request. =)
+7. Submit a pull request. =)
 
 For a list of contributors who have participated in this project, check out [AUTHORS](AUTHORS.md).
 
-## Testing
+# Testing
 
 Unit Testing is currently done using the built-in unittest module:
 
@@ -192,6 +184,6 @@ Unit Testing is currently done using the built-in unittest module:
 $ python tests.py
 ```
 
-## License
+# License
 
 This project is licensed under GPL 3.0 - see [LICENSE](LICENSE.md) for details.

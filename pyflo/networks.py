@@ -61,7 +61,7 @@ class Node(object):
         weir = links.Weir(invert, k_orif, k_weir, section, node_1=self, node_2=node_2)
         self.links.append(weir)
         return weir
-    
+
     def add_reach(self, reach):
         """Assign a :class:`Reach` instance as a child of the node.
 
@@ -79,7 +79,7 @@ class Node(object):
     def add_link(self, link):
         link.node_1 = self
         self.links.append(link)
-    
+
     def add_basin(self, basin):
         """Assign a :class:`Basin` instance as a child of the node.
 
