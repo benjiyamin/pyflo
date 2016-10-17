@@ -60,20 +60,32 @@
         
             <ul>
             
-                <li class="toctree-l3"><a href="#project-pyflo">Project PyFlo</a></li>
+                <li class="toctree-l3"><a href="#project-overview">Project Overview</a></li>
                 
-                    <li><a class="toctree-l4" href="#installation">Installation</a></li>
+            
+                <li class="toctree-l3"><a href="#installation">Installation</a></li>
                 
-                    <li><a class="toctree-l4" href="#examples">Examples</a></li>
+            
+                <li class="toctree-l3"><a href="#examples">Examples</a></li>
                 
-                    <li><a class="toctree-l4" href="#contributing">Contributing</a></li>
+            
+                <li class="toctree-l3"><a href="#contributing">Contributing</a></li>
                 
-                    <li><a class="toctree-l4" href="#testing">Testing</a></li>
+            
+                <li class="toctree-l3"><a href="#testing">Testing</a></li>
                 
-                    <li><a class="toctree-l4" href="#license">License</a></li>
+            
+                <li class="toctree-l3"><a href="#license">License</a></li>
                 
             
             </ul>
+        
+    </li>
+<li>
+          
+            <li>
+    <li class="toctree-l1 ">
+        <a class="" href="examples/">Examples</a>
         
     </li>
 <li>
@@ -128,7 +140,7 @@
           <div role="main">
             <div class="section">
               
-                <h1 id="project-pyflo">Project PyFlo</h1>
+                <h1 id="project-overview">Project Overview</h1>
 <p>PyFlo is an open-source library written in Python for performing hydraulic and hydrology stormwater 
 analysis. Capabilities include network hydraulic grade analysis and time/iteration based storage and 
 flood routing simulations. SCS Unit Hydrograph and Rational Method are included for basin 
@@ -136,7 +148,7 @@ computations. Most of the calculations and procedures are derived from available
 publications and resources. There are some GUI programs available that have similar capabilities. 
 The intent is that many will build from and contribute to the project, making it much more powerful 
 than a single person ever could.</p>
-<h2 id="installation">Installation</h2>
+<h1 id="installation">Installation</h1>
 <p>Installing the easy way, using pip:</p>
 <pre><code class="bash">$ pip install pyflo
 </code></pre>
@@ -147,150 +159,62 @@ $ source venv/bin/activate
 $ pip install -r requirements.txt
 </code></pre>
 
-<h2 id="examples">Examples</h2>
-<h3 id="from-neh-hydrology-ch-16-ex-16-1">From <a href="http://www.wcc.nrcs.usda.gov/ftpref/wntsc/H&amp;H/NEHhydrology/ch16.pdf#page=15">NEH Hydrology Ch. 16, Ex. 16-1</a>:</h3>
-<pre><code class="python">from pyflo import system
-from pyflo.nrcs import hydrology
-
-uh484 = system.array_from_csv('./resources/distributions/runoff/scs484.csv')
-basin = hydrology.Basin(
-    area=4.6,
-    cn=85.0,
-    tc=2.3,
-    runoff_dist=uh484,
-    peak_factor=484.0
-)
-</code></pre>
-
-<h4 id="unit-hydrograph">Unit Hydrograph</h4>
-<p>With PyFlo, it's fairly simple to create a unit hydrograph, which represents the time-flow 
-relationship per unit (inch) of runoff depth.</p>
-<pre><code class="python">unit_hydrograph = basin.unit_hydrograph(interval=0.3)
-</code></pre>
-
-<p>We can use <code>matplotlib</code> to plot the example results:</p>
-<pre><code class="python">from matplotlib import pyplot
-
-x = unit_hydrograph[:, 0]
-y = unit_hydrograph[:, 1]
-pyplot.plot(x, y, 'k')
-pyplot.plot(x, y, 'bo')
-pyplot.title(r'Unit Hydrograph from Example 16-1')
-pyplot.xlabel(r'Time ($hr$)')
-pyplot.ylabel(r'Discharge ($\frac{ft^{3}}{s}$)')
-pyplot.show()
-</code></pre>
-
-<p><img alt="Unit Hydrograph" src="./img/unit_hydrograph_16-1.png" title="Unit Hydrograph" /></p>
-<h4 id="flood-hydrograph">Flood Hydrograph</h4>
-<p>A flood hydrograph can be generated, which is a time-flow relationship synthesized from basin 
-properties and a provided scaled rainfall distribution.</p>
-<pre><code class="python">import numpy
-
-rainfall_dist = numpy.array([
-    (0.00, 0.000),
-    (0.05, 0.074),
-    (0.10, 0.174),
-    (0.15, 0.280),
-    (0.20, 0.378),
-    (0.25, 0.448),
-    (0.30, 0.496),
-    (0.35, 0.526),
-    (0.40, 0.540),
-    (0.45, 0.540),
-    (0.50, 0.540),
-    (0.55, 0.542),
-    (0.60, 0.554),
-    (0.65, 0.582),
-    (0.70, 0.640),
-    (0.75, 0.724),
-    (0.80, 0.816),
-    (0.85, 0.886),
-    (0.90, 0.940),
-    (0.95, 0.980),
-    (1.00, 1.000)
-])
-rainfall_depths = rainfall_dist * [6.0, 5.0]  # Scale array to 5 inches over 6 hours.
-flood_hydrograph = basin.flood_hydrograph(rainfall_depths, interval=0.3)
-</code></pre>
-
-<p>We can use <code>matplotlib</code> to plot the example results:</p>
-<pre><code class="python">from matplotlib import pyplot
-
-x = flood_hydrograph[:, 0]
-y = flood_hydrograph[:, 1]
-pyplot.plot(x, y, 'k')
-pyplot.plot(x, y, 'bo')
-pyplot.title(r'Flood Hydrograph from Example 16-1')
-pyplot.xlabel(r'Time ($hr$)')
-pyplot.ylabel(r'Discharge ($\frac{ft^{3}}{s}$)')
-pyplot.show()
-</code></pre>
-
-<p><img alt="Flood Hydrograph" src="./img/flood_hydrograph_16-1.png" title="Flood Hydrograph" /></p>
-<h2 id="contributing">Contributing</h2>
+<h1 id="examples">Examples</h1>
+<p>There are many ways to utilize the PyFlo library. A few examples and tutorials can be viewed on the
+<a href="examples/">EXAMPLES</a> page.</p>
+<h1 id="contributing">Contributing</h1>
 <p>For developers, it's important to use common best practices when contributing to the project.
 <a href="https://www.python.org/dev/peps/pep-0008/">PEP 8</a> should always be adhered. Code should be
 documented with <a href="http://sphinxcontrib-napoleon.readthedocs.io/en/latest/example_google.html">Google style docstrings</a>.
 Pull requests and filing issues are encouraged.</p>
-<h3 id="to-start-contributing-with-the-pyflo-repository">To start contributing with the PyFlo repository:</h3>
+<p>To start contributing with the PyFlo repository:</p>
 <ol>
 <li>
 <p>Fork it!</p>
 </li>
 <li>
 <p>Create a local clone of your fork.</p>
-<pre><code>```bash
-$ git clone https://github.com/YOUR-USERNAME/pyflo
+<pre><code>$ git clone https://github.com/YOUR-USERNAME/pyflo
 Cloning into `pyflo`...
 remote: Counting objects: 10, done.
 remote: Compressing objects: 100% (8/8), done.
 remove: Total 10 (delta 1), reused 10 (delta 1)
 Unpacking objects: 100% (10/10), done.
-```
 </code></pre>
 </li>
 <li>
 <p>Add the original as a remote repository named <code>upstream</code>.</p>
-<pre><code>```bash
-$ git remote add upstream https://github.com/benjiyamin/pyflo.git
+<pre><code>$ git remote add upstream https://github.com/benjiyamin/pyflo.git
 $ git remote -v
 origin    https://github.com/YOUR-USERNAME/pyflo.git (fetch)
 origin    https://github.com/YOUR-USERNAME/pyflo.git (push)
 upstream  https://github.com/benjiyamin/pyflo.git (fetch)
 upstream  https://github.com/benjiyamin/pyflo.git (push)
-```
 </code></pre>
 </li>
 <li>
 <p>Fetch the current upstream repository branches and commits.</p>
-<pre><code>```bash
-$ git fetch upstream
+<pre><code>$ git fetch upstream
 remote: Counting objects: 75, done.
 remote: Compressing objects: 100% (53/53), done.
 remote: Total 62 (delta 27), reused 44 (delta 9)
 Unpacking objects: 100% (62/62), done.
 From https://github.com/benjiyamin/pyflo
  * [new branch]      master     -&gt; upstream/master
-```
 </code></pre>
 </li>
 <li>
 <p>Checkout your local <code>master</code> branch and sync <code>upstream/master</code> to it, without losing local changes.</p>
-<pre><code>```bash
-$ git checkout master
+<pre><code>$ git checkout master
 Switched to branch 'master'
 
 $ git merge upstream/master
-```
 </code></pre>
 </li>
 <li>
 <p>Commit your local changes and push to <code>upstream/master</code>.</p>
-<pre><code>```bash
-$ git commit -m 'Add some feature'
+<pre><code>$ git commit -m 'Add some feature'
 $ git push upstream master
-```
 </code></pre>
 </li>
 <li>
@@ -298,12 +222,12 @@ $ git push upstream master
 </li>
 </ol>
 <p>For a list of contributors who have participated in this project, check out <a href="authors/">AUTHORS</a>.</p>
-<h2 id="testing">Testing</h2>
+<h1 id="testing">Testing</h1>
 <p>Unit Testing is currently done using the built-in unittest module:</p>
 <pre><code class="bash">$ python tests.py
 </code></pre>
 
-<h2 id="license">License</h2>
+<h1 id="license">License</h1>
 <p>This project is licensed under GPL 3.0 - see <a href="license/">LICENSE</a> for details.</p>
               
             </div>
@@ -312,7 +236,7 @@ $ git push upstream master
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="authors/" class="btn btn-neutral float-right" title="Authors">Next <span class="icon icon-circle-arrow-right"></span></a>
+        <a href="examples/" class="btn btn-neutral float-right" title="Examples">Next <span class="icon icon-circle-arrow-right"></span></a>
       
       
     </div>
@@ -342,7 +266,7 @@ $ git push upstream master
       
       
       
-        <span style="margin-left: 15px"><a href="authors/" style="color: #fcfcfc">Next &raquo;</a></span>
+        <span style="margin-left: 15px"><a href="examples/" style="color: #fcfcfc">Next &raquo;</a></span>
       
     </span>
 </div>
@@ -352,5 +276,5 @@ $ git push upstream master
 
 <!--
 MkDocs version : 0.15.3
-Build Date UTC : 2016-10-16 21:23:44.336908
+Build Date UTC : 2016-10-17 00:58:00.870348
 -->

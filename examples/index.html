@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  
+  
+  <title>Examples - PyFlo</title>
+  
+
+  <link rel="shortcut icon" href="../img/favicon.ico">
+
+  
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
+
+  <link rel="stylesheet" href="../css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../css/theme_extra.css" type="text/css" />
+  <link rel="stylesheet" href="../css/highlight.css">
+
+  
+  <script>
+    // Current page data
+    var mkdocs_page_name = "Examples";
+    var mkdocs_page_input_path = "examples.md";
+    var mkdocs_page_url = "/examples/";
+  </script>
+  
+  <script src="../js/jquery-2.1.1.min.js"></script>
+  <script src="../js/modernizr-2.8.3.min.js"></script>
+  <script type="text/javascript" src="../js/highlight.pack.js"></script>
+  <script src="../js/theme.js"></script> 
+
+  
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+      <div class="wy-side-nav-search">
+        <a href=".." class="icon icon-home"> PyFlo</a>
+        <div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+        <ul class="current">
+          
+            <li>
+    <li class="toctree-l1 ">
+        <a class="" href="..">Home</a>
+        
+    </li>
+<li>
+          
+            <li>
+    <li class="toctree-l1 current">
+        <a class="current" href="./">Examples</a>
+        
+            <ul>
+            
+                <li class="toctree-l3"><a href="#hydrographs">Hydrographs</a></li>
+                
+                    <li><a class="toctree-l4" href="#unit-hydrograph">Unit Hydrograph</a></li>
+                
+                    <li><a class="toctree-l4" href="#flood-hydrograph">Flood Hydrograph</a></li>
+                
+            
+                <li class="toctree-l3"><a href="#reservoirs">Reservoirs</a></li>
+                
+                    <li><a class="toctree-l4" href="#orifice-recovery">Orifice Recovery</a></li>
+                
+            
+            </ul>
+        
+    </li>
+<li>
+          
+            <li>
+    <li class="toctree-l1 ">
+        <a class="" href="../authors/">Authors</a>
+        
+    </li>
+<li>
+          
+            <li>
+    <li class="toctree-l1 ">
+        <a class="" href="../license/">License</a>
+        
+    </li>
+<li>
+          
+        </ul>
+      </div>
+      &nbsp;
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="..">PyFlo</a>
+      </nav>
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="..">Docs</a> &raquo;</li>
+    
+      
+    
+    <li>Examples</li>
+    <li class="wy-breadcrumbs-aside">
+      
+        
+          <a href="https://github.com/benjiyamin/pyflo/" class="icon icon-github"> Edit on GitHub</a>
+        
+      
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main">
+            <div class="section">
+              
+                <h1 id="hydrographs">Hydrographs</h1>
+<p>From <a href="http://www.wcc.nrcs.usda.gov/ftpref/wntsc/H&amp;H/NEHhydrology/ch16.pdf#page=15">NEH Hydrology Ch. 16, Ex. 16-1</a>:</p>
+<pre><code class="python">from pyflo import system
+from pyflo.nrcs import hydrology
+
+uh484 = system.array_from_csv('./resources/distributions/runoff/scs484.csv')
+basin = hydrology.Basin(
+    area=4.6,
+    cn=85.0,
+    tc=2.3,
+    runoff_dist=uh484,
+    peak_factor=484.0
+)
+</code></pre>
+
+<h2 id="unit-hydrograph">Unit Hydrograph</h2>
+<p>With PyFlo, it's fairly simple to create a unit hydrograph, which represents the time-flow 
+relationship per unit (inch) of runoff depth.</p>
+<pre><code class="python">unit_hydrograph = basin.unit_hydrograph(interval=0.3)
+</code></pre>
+
+<p>We can use <code>matplotlib</code> to plot the example results:</p>
+<pre><code class="python">from matplotlib import pyplot
+
+x = unit_hydrograph[:, 0]
+y = unit_hydrograph[:, 1]
+pyplot.plot(x, y, 'k')
+pyplot.plot(x, y, 'bo')
+pyplot.title(r'Unit Hydrograph from Example 16-1')
+pyplot.xlabel(r'Time ($hr$)')
+pyplot.ylabel(r'Discharge ($\frac{ft^{3}}{s}$)')
+pyplot.show()
+</code></pre>
+
+<p><img alt="Unit Hydrograph" src="../img/unit_hydrograph_16-1.png" title="Unit Hydrograph" /></p>
+<h2 id="flood-hydrograph">Flood Hydrograph</h2>
+<p>A flood hydrograph can be generated, which is a time-flow relationship synthesized from basin 
+properties and a provided scaled rainfall distribution.</p>
+<pre><code class="python">import numpy
+
+rainfall_dist = numpy.array([
+    (0.00, 0.000),
+    (0.05, 0.074),
+    (0.10, 0.174),
+    (0.15, 0.280),
+    (0.20, 0.378),
+    (0.25, 0.448),
+    (0.30, 0.496),
+    (0.35, 0.526),
+    (0.40, 0.540),
+    (0.45, 0.540),
+    (0.50, 0.540),
+    (0.55, 0.542),
+    (0.60, 0.554),
+    (0.65, 0.582),
+    (0.70, 0.640),
+    (0.75, 0.724),
+    (0.80, 0.816),
+    (0.85, 0.886),
+    (0.90, 0.940),
+    (0.95, 0.980),
+    (1.00, 1.000)
+])
+rainfall_depths = rainfall_dist * [6.0, 5.0]  # Scale array to 5 inches over 6 hours.
+flood_hydrograph = basin.flood_hydrograph(rainfall_depths, interval=0.3)
+</code></pre>
+
+<p>We can use <code>matplotlib</code> to plot the example results:</p>
+<pre><code class="python">from matplotlib import pyplot
+
+x = flood_hydrograph[:, 0]
+y = flood_hydrograph[:, 1]
+pyplot.plot(x, y, 'k')
+pyplot.plot(x, y, 'bo')
+pyplot.title(r'Flood Hydrograph from Example 16-1')
+pyplot.xlabel(r'Time ($hr$)')
+pyplot.ylabel(r'Discharge ($\frac{ft^{3}}{s}$)')
+pyplot.show()
+</code></pre>
+
+<p><img alt="Flood Hydrograph" src="../img/flood_hydrograph_16-1.png" title="Flood Hydrograph" /></p>
+<h1 id="reservoirs">Reservoirs</h1>
+<h2 id="orifice-recovery">Orifice Recovery</h2>
+<p>A wet detention pond has the following geometry:</p>
+<table>
+<thead>
+<tr>
+<th>Elevation (ft)</th>
+<th>Area (ft<sup>3</sup>)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>16.0</td>
+<td>4356.0</td>
+</tr>
+<tr>
+<td>21.5</td>
+<td>18295.2</td>
+</tr>
+<tr>
+<td>23.5</td>
+<td>26571.6</td>
+</tr>
+<tr>
+<td>29.8</td>
+<td>24450.0</td>
+</tr>
+</tbody>
+</table>
+<p>Right after a storm, the stage of the pond is at elevation 25.35 ft. The orifice that will gradually 
+release the stormwater at a controlled rate is at invert elevation 23.35 and is 3.25 inches in 
+diameter. The orifice coefficient is assumed to be 0.6.</p>
+<p>Produce the time-stage relationship of the pond over the next 24 hours.</p>
+<pre><code class="python">from pyflo import networks, routing, sections
+
+network = networks.Network()
+n_1 = network.create_node()
+out = network.create_node()
+contours = [
+    (16.0, 4356.0),
+    (21.5, 18295.2),
+    (23.5, 26571.6),
+    (29.8, 54450.0)
+]
+pond = routing.Reservoir(contours=contours, start_stage=25.35)
+n_1.add_reservoir(reservoir=pond)
+dia = 3.25 / 12.0  # 3.25 inches, converted to feet
+cir = sections.Circle(diameter=dia)
+n_1.create_weir(node_2=out, invert=23.5, k_orif=0.6, k_weir=3.2, section=cir)
+interval = 10.0 / 60.0  # 10 minutes, converted to hours
+analysis = routing.Analysis(node=out, tw=0.0, duration=24.0, interval=interval)
+results = analysis.node_solution_results()
+</code></pre>
+
+<p>We can use <code>matplotlib</code> to plot the example results:</p>
+<pre><code class="python">from matplotlib import pyplot
+
+data = results[0]['data']
+x_recovery = [line['time'] for line in data]
+y_recovery = [line['stage'] for line in data]
+pyplot.plot(x_recovery, y_recovery, 'b')
+pyplot.title(r'Wet Detention Pond Recovery')
+pyplot.xlabel(r'Time ($hr$)')
+pyplot.ylabel(r'Stage ($ft$)')
+pyplot.show()
+
+</code></pre>
+
+<p><img alt="Orifice Recovery" src="../img/orifice_recovery.png" title="Orifice Recovery" /></p>
+              
+            </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../authors/" class="btn btn-neutral float-right" title="Authors">Next <span class="icon icon-circle-arrow-right"></span></a>
+      
+      
+        <a href=".." class="btn btn-neutral" title="Home"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+    
+  </div>
+
+  Built with <a href="http://www.mkdocs.org">MkDocs</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+	  
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+<div class="rst-versions" role="note" style="cursor: pointer">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      
+          <a href="https://github.com/benjiyamin/pyflo/" class="icon icon-github" style="float: left; color: #fcfcfc"> GitHub</a>
+      
+      
+        <span><a href=".." style="color: #fcfcfc;">&laquo; Previous</a></span>
+      
+      
+        <span style="margin-left: 15px"><a href="../authors/" style="color: #fcfcfc">Next &raquo;</a></span>
+      
+    </span>
+</div>
+
+</body>
+</html>
