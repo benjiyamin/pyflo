@@ -76,13 +76,13 @@ class Analysis(object):
                     'tc_local': float,
                     'tc_total': float,
                     'flow': float,
-                    'hgl_upper': float,
-                    'hgl_lower': float,
+                    'hgl_1': float,
+                    'hgl_2': float,
                 }
 
         """
         data = totaled_basin_data(self.node)
-        data[-1]['hgl_lower'] = self.tw
+        data[-1]['hgl_2'] = self.tw
 
         # Accumulate travel times, top-down
         for line in data:
@@ -101,8 +101,8 @@ class Analysis(object):
                 i = self.intensity
             ca = line['runoff_area']
             flow = i * ca * constants.K_RATIONAL
-            depth = reach.depth_normal(flow)
-            time_section = reach.time_section(depth, flow)
+            depth = reach.normal_depth(flow)
+            time_section = reach.section_time(depth, flow)
             line['flow'] = flow
             line['tc_total'] = tc + time_section
 
@@ -112,10 +112,10 @@ class Analysis(object):
             tw = self.tw
             for r in data:
                 line_reach = r['reach']
-                if reach.node_2 == line_reach.node_1 and isinstance(r['hgl_upper'], float):
-                    tw = max(tw, r['hgl_upper'])
+                if reach.node_2 == line_reach.node_1 and isinstance(r['hgl_1'], float):
+                    tw = max(tw, r['hgl_1'])
             flow = line['flow']
-            line['hgl_lower'] = reach.hgl_lower(tw, flow)
-            line['hgl_upper'] = reach.hgl_upper(tw, flow)
+            line['hgl_2'] = reach.hgl_2(tw, flow)
+            line['hgl_1'] = reach.hgl_1(tw, flow)
 
         return data

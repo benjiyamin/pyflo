@@ -65,12 +65,12 @@ class OneReachGeopakTest(unittest.TestCase):
         self.assertTupleEqual(data, control)
 
     def test_hgl_upper(self):
-        data = tuple([round(line['hgl_upper'], 1) for line in self.data])
+        data = tuple([round(line['hgl_1'], 1) for line in self.data])
         control = (5.0,)
         self.assertTupleEqual(data, control)
 
     def test_hgl_lower(self):
-        data = tuple([round(line['hgl_lower'], 1) for line in self.data])
+        data = tuple([round(line['hgl_2'], 1) for line in self.data])
         control = (4.9,)
         self.assertTupleEqual(data, control)
 
@@ -125,12 +125,12 @@ class FiveReachGeopakTest(unittest.TestCase):
         self.assertTupleEqual(data, control)
 
     def test_hgl_upper(self):
-        data = tuple([round(line['hgl_upper'], 1) for line in self.data])
+        data = tuple([round(line['hgl_1'], 1) for line in self.data])
         control = (26.3, 21.5, 26.4, 6.9, 6.3)
         self.assertTupleEqual(data, control)
 
     def test_hgl_lower(self):
-        data = tuple([round(line['hgl_lower'], 1) for line in self.data])
+        data = tuple([round(line['hgl_2'], 1) for line in self.data])
         control = (21.5, 20.8, 21.2, 6.3, 6.1)
         self.assertTupleEqual(data, control)
 
