@@ -7,12 +7,13 @@ def read(filename):
     return open(os.path.join(os.path.dirname(__file__), filename)).read()
 
 def readlines(filename):
-    return open(os.path.join(os.path.dirname(__file__), filename)).readlines()
+    with open(os.path.join(os.path.dirname(__file__), filename)) as open_file:
+        return [l.split("==")[0] for l in open_file.readlines()]
 
 
 setup(
     name='pyflo',
-    version=0.1,
+    version='0.3.2',
     author='benjiyamin, see AUTHORS.md',
     author_email='benjiyamin@gmail.com',
     description='PyFlo is an open-source library written in Python for performing hydraulic and '
@@ -22,7 +23,7 @@ setup(
     url='https://benjiyamin.github.io/pyflo',
     packages=['pyflo'],
     long_description=read('README.md'),
-    install_requires = readlines('requirements/production.txt'),
+    install_requires=readlines('requirements/production.txt'),
     classifiers=[
         'Development Status :: 4 - Beta',
         'Operating System :: MacOS :: MacOS X',

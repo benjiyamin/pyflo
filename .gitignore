@@ -3,7 +3,7 @@ __pycache__/
 *.py[cod]
 *$py.class
 
-MANIFEST
+MANIFEST.in
 dist/
 
 venv/
@@ -12,3 +12,5 @@ vdev/
 scripts/
 archive/
 site/
+
+*.egg-info/
