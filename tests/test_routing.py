@@ -55,7 +55,7 @@ class BleedDownTest(unittest.TestCase):
         out = network.create_node()
         diameter = 3.25 / 12.0
         ci3 = sections.Circle(diameter=diameter)
-        nw5.create_weir(node_2=out, invert=23.5, k_orif=0.6, k_weir=3.2, section=ci3)
+        self.weir = nw5.create_weir(node_2=out, invert=23.5, k_orif=0.6, k_weir=3.2, section=ci3)
         interval = 5.0 / 60.0
         self.analysis = routing.Analysis(node=out, tw=0.0, duration=2.0, interval=interval)
 
@@ -70,7 +70,7 @@ class BleedDownTest(unittest.TestCase):
 
     def test_node_solution_results(self):
         results = self.analysis.node_solution_results()
-        data = results[0]['data']
+        data = results[self.weir]['data']
         last_stage = data[-1]['stage']
         control = 25.28
         self.assertAlmostEqual(last_stage, control, 2)
