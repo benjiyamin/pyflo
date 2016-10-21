@@ -32,6 +32,15 @@ class Link(object):
     def flow(self, stage_1, stage_2):
         pass
 
+    def section_time(self, depth, flow):
+        pass
+
+    def normal_depth_accuracy(self, depth, flow):
+        pass
+
+    def normal_depth(self, flow):
+        pass
+
 
 class Weir(Link):
 
@@ -60,6 +69,32 @@ class Weir(Link):
             if stage_2 > self.invert:                                               # submerged flow
                 flow *= 1.0 - ((stage_2/stage_1)**1.5)**0.385
         return flow
+
+    def section_time(self, depth, flow):
+        return 0.0
+
+    def normal_depth_accuracy(self, depth, flow):
+        stage_1 = depth + self.invert
+        q_h = self.flow(stage_1, self.invert)
+        return q_h - flow
+
+    def normal_depth(self, flow):
+        if self.section.rise:
+            stage_1 = self.section.rise + self.invert
+            q_h = self.flow(stage_1, self.invert)
+            if flow / q_h > 1.0:
+                return self.section.rise
+        for i in range(1, 100):
+            depth_trial = i
+            if self.normal_depth_accuracy(depth_trial, flow) > 1.0:
+                depth = optimize.bisect(
+                    f=self.normal_depth_accuracy,
+                    a=1e-12,
+                    b=depth_trial,
+                    args=(flow,)
+                )
+                return float(depth)
+        raise Exception('Maximum iterations reached while trying to find an upper bound')
 
 
 class Reach(Link):

@@ -7,7 +7,6 @@ MANIFEST.in
 dist/
 
 venv/
-vdev/
 .idea
 scripts/
 archive/

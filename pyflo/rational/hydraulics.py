@@ -5,39 +5,38 @@
 
 """
 
-from typing import List, Dict, Union
+from typing import Dict, Union
+from collections import OrderedDict
 
-from pyflo import build, constants, networks, distributions
+from pyflo import build, constants, networks, distributions, links
 
 
 def totaled_basin_data(node):
     """Get cumulative basin data for each reach ordered downstream to the node.
 
     Returns:
-        List[Dict]: A list of data.
+        Dict[links.Link]: A dictionary of data associated to each link.
         Each line of data is a dictionary in the form::
 
-            {
-                'reach': Reach,
+            links.Link: {
                 'area': float,
-                'runoff_area': float
+                'c': float
             }
 
     """
-    reaches = build.links_down_to_node(node, links=node.network.reaches)
+    o_links = build.links_down_to_node(node, links=node.network.links)
 
-    # Accumulate runoff_area and area, top-down
-    data = []
-    for reach in reaches:
-        area = reach.node_1.basin.area if reach.node_1.basin else 0.0
-        runoff = reach.node_1.basin.runoff_area if reach.node_1.basin else 0.0
-        if data:
-            for line in data:
-                line_reach = line['reach']
-                if reach.node_1 == line_reach.node_2:
-                    area += line['area']
-                    runoff += line['runoff_area']
-        data.append({'reach': reach, 'area': area, 'runoff_area': runoff})
+    # Accumulate c and area, top-down
+    data = OrderedDict()
+    for link in o_links:
+        area = link.node_1.basin.area if link.node_1.basin else 0.0
+        runoff = link.node_1.basin.runoff_area if link.node_1.basin else 0.0
+        for r, r_data in data.items():
+            if link.node_1 == r.node_2:
+                area += r_data['area']
+                runoff += r_data['area'] * r_data['c']
+        c = runoff / area
+        data[link] = {'area': area, 'c': c}
     return data
 
 
@@ -65,13 +64,12 @@ class Analysis(object):
         """Analyzes hydraulics for each reach in a network and returns result data.
 
         Returns:
-            List[Dict]: A list of data.
+            Ditch[links.Link]: A dictionary of data associated to each link.
             Each line of data is a dictionary in the form::
 
-                {
-                    'reach': Reach,
+                links.Link: {
                     'area': float,
-                    'runoff_area': float,
+                    'c': float,
                     'second': float,
                     'tc_local': float,
                     'tc_total': float,
@@ -82,40 +80,38 @@ class Analysis(object):
 
         """
         data = totaled_basin_data(self.node)
-        data[-1]['hgl_2'] = self.tw
-
-        # Accumulate travel times, top-down
-        for line in data:
+        last_link = [link for link in self.node.network.links if link.node_2 == self.node][0]
+        # data[-1]['hgl_2'] = self.tw
+        data[last_link]['hgl_2'] = self.tw
+        for link, link_data in data.items():
             tc = 0.0
-            reach = line['reach']
-            if reach.node_1.basin:
-                tc = reach.node_1.basin.tc
-            for r in data:
-                l_reach = r['reach']
-                if reach.node_1 == l_reach.node_2 and isinstance(r['tc_total'], float):
-                    tc = max(tc, r['tc_total'])
-            line['tc_local'] = tc
+            if link.node_1.basin:
+                tc = link.node_1.basin.tc
+            for r, r_data in data.items():
+                if link.node_1 == r.node_2:
+                    if 'tc_total' in r_data and isinstance(r_data['tc_total'], float):
+                        tc = max(tc, r_data['tc_total'])
+            link_data['tc_local'] = tc
             if isinstance(self.intensity, distributions.Evaluator):
                 i = self.intensity.get_y(tc / 60.0)
             else:
                 i = self.intensity
-            ca = line['runoff_area']
+            ca = link_data['c'] * link_data['area']
             flow = i * ca * constants.K_RATIONAL
-            depth = reach.normal_depth(flow)
-            time_section = reach.section_time(depth, flow)
-            line['flow'] = flow
-            line['tc_total'] = tc + time_section
+            depth = link.normal_depth(flow)
+            ts = link.section_time(depth, flow)
+            link_data['flow'] = flow
+            link_data['tc_total'] = tc + ts
 
         # Trace back HGL, bottom-up
-        for line in reversed(data):
-            reach = line['reach']
-            tw = self.tw
-            for r in data:
-                line_reach = r['reach']
-                if reach.node_2 == line_reach.node_1 and isinstance(r['hgl_1'], float):
-                    tw = max(tw, r['hgl_1'])
-            flow = line['flow']
-            line['hgl_2'] = reach.hgl_2(tw, flow)
-            line['hgl_1'] = reach.hgl_1(tw, flow)
+        for link, link_data in reversed(data.items()):
+            stage_2 = self.tw
+            for r, r_data in data.items():
+                if link.node_2 == r.node_1:
+                    if 'hgl_1' in r_data and isinstance(r_data['hgl_1'], float):
+                        stage_2 = max(stage_2, r_data['hgl_1'])
+            flow = link_data['flow']
+            link_data['hgl_2'] = link.hgl_2(stage_2, flow)
+            link_data['hgl_1'] = link.hgl_1(stage_2, flow)
 
         return data
