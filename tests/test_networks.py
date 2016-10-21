@@ -13,21 +13,21 @@ class NetworkTest(unittest.TestCase):
         s101 = network.create_node()
         o1_1 = network.create_node()
         rc18 = sections.Circle(diameter=1.5, mannings=0.012)
-        s101.create_reach(node_2=s102, invert_1=8.0, invert_2=7.0, length=300.0, section=rc18)
-        s102.create_reach(node_2=o1_1, invert_1=7.0, invert_2=6.0, length=300.0, section=rc18)
+        r1 = s101.create_reach(node_2=s102, invert_1=8.0, invert_2=7.0, length=300.0, section=rc18)
+        r2 = s102.create_reach(node_2=o1_1, invert_1=7.0, invert_2=6.0, length=300.0, section=rc18)
         b101 = hydrology.Basin(tc=10.0, area=0.1, c=0.95)
         b102 = hydrology.Basin(tc=10.0, area=0.2, c=0.95)
         s101.add_basin(b101)
         s102.add_basin(b102)
-        runoff_data = hydraulics.totaled_basin_data(o1_1)
+        basin_data = hydraulics.totaled_basin_data(o1_1)
         control_area_1 = b101.area
         control_area_2 = control_area_1 + b102.area
         control_runoff_1 = b101.runoff_area
         control_runoff_2 = control_runoff_1 + b102.runoff_area
-        result_area_1 = runoff_data[0]['area']
-        result_area_2 = runoff_data[1]['area']
-        result_runoff_1 = runoff_data[0]['runoff_area']
-        result_runoff_2 = runoff_data[1]['runoff_area']
+        result_area_1 = basin_data[r1]['area']
+        result_area_2 = basin_data[r2]['area']
+        result_runoff_1 = result_area_1 * basin_data[r1]['c']
+        result_runoff_2 = result_area_2 * basin_data[r2]['c']
         self.assertEqual(
             (control_area_1, control_area_2, control_runoff_1, control_runoff_2),
             (result_area_1, result_area_2, result_runoff_1, result_runoff_2)

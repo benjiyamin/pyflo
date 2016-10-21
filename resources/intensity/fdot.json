@@ -1,5 +1,5 @@
 {
-  "equation": "[a] + [b] * log([t]) + [c] * log([t])**2 + [d] * log([t])**3",
+  "equation": "[a] + [b]*log([t]) + [c]*log([t])**2 + [d]*log([t])**3",
   "input_key": "[t]",
   "units": {
     "input": "min",
