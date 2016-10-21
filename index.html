@@ -153,12 +153,6 @@ than a single person ever could.</p>
 <pre><code class="bash">$ pip install pyflo
 </code></pre>
 
-<p>Setting up a clean working environment, using virtualenv:</p>
-<pre><code class="bash">$ virtualenv -p python3 venv
-$ source venv/bin/activate
-$ pip install -r requirements.txt
-</code></pre>
-
 <h1 id="examples">Examples</h1>
 <p>There are many ways to utilize the PyFlo library. A few examples and tutorials can be viewed on the
 <a href="examples/">EXAMPLES</a> page.</p>
@@ -180,6 +174,13 @@ remote: Counting objects: 10, done.
 remote: Compressing objects: 100% (8/8), done.
 remove: Total 10 (delta 1), reused 10 (delta 1)
 Unpacking objects: 100% (10/10), done.
+</code></pre>
+</li>
+<li>
+<p>Set up a clean working environment, using virtualenv.</p>
+<pre><code>$ virtualenv -p python3 venv
+$ source venv/bin/activate
+$ pip install -r requirements/development.txt
 </code></pre>
 </li>
 <li>
@@ -276,5 +277,5 @@ $ git push upstream master
 
 <!--
 MkDocs version : 0.15.3
-Build Date UTC : 2016-10-17 00:58:00.870348
+Build Date UTC : 2016-10-21 00:38:07.803000
 -->
