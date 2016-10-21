@@ -16,14 +16,6 @@ Installing the easy way, using pip:
 $ pip install pyflo
 ```
 
-Setting up a clean working environment, using virtualenv:
-
-```bash
-$ virtualenv -p python3 venv
-$ source venv/bin/activate
-$ pip install -r requirements.txt
-```
-
 # Examples
 
 ## Hydrographs
@@ -141,7 +133,13 @@ To start contributing with the PyFlo repository:
         remove: Total 10 (delta 1), reused 10 (delta 1)
         Unpacking objects: 100% (10/10), done.
 
-3. Add the original as a remote repository named `upstream`.
+3. Set up a clean working environment, using virtualenv.
+
+        $ virtualenv -p python3 venv
+        $ source venv/bin/activate
+        $ pip install -r requirements/development.txt
+
+4. Add the original as a remote repository named `upstream`.
 
         $ git remote add upstream https://github.com/benjiyamin/pyflo.git
         $ git remote -v
@@ -150,7 +148,7 @@ To start contributing with the PyFlo repository:
         upstream  https://github.com/benjiyamin/pyflo.git (fetch)
         upstream  https://github.com/benjiyamin/pyflo.git (push)
 
-4. Fetch the current upstream repository branches and commits.
+5. Fetch the current upstream repository branches and commits.
 
         $ git fetch upstream
         remote: Counting objects: 75, done.
@@ -160,19 +158,19 @@ To start contributing with the PyFlo repository:
         From https://github.com/benjiyamin/pyflo
          * [new branch]      master     -> upstream/master
 
-5. Checkout your local `master` branch and sync `upstream/master` to it, without losing local changes.
+6. Checkout your local `master` branch and sync `upstream/master` to it, without losing local changes.
 
         $ git checkout master
         Switched to branch 'master'
         
         $ git merge upstream/master
 
-6. Commit your local changes and push to `upstream/master`.
+7. Commit your local changes and push to `upstream/master`.
 
         $ git commit -m 'Add some feature'
         $ git push upstream master
 
-7. Submit a pull request. =)
+8. Submit a pull request. =)
 
 For a list of contributors who have participated in this project, check out [AUTHORS](AUTHORS.md).
 
