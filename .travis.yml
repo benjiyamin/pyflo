@@ -1,10 +1,13 @@
 language: python
 python:
-  - "3.5"
-# command to install dependencies
+- '3.5'
 install:
-  - pip install -r requirements/production.txt
-  - pip install pep8
-# command to run tests
-script:
-  python tests.py
+- pip install -r requirements/production.txt
+- pip install pep8
+script: python tests.py
+notifications:
+  pushover:
+    api_key:
+      secure: AxfUknmLmUG1ophOasLRLZtv13HrE/w7zJUh0chv/yrPx7PiOVCF/C3FwmNkTRRK+/Abzy/oNOY2/E/VdwxtOc5K6fnrwEROib4GctnfC6pb0VSIOCs9+UxfwLnu60lKeE5PJi+1dz96zlxiIprNb4nG+BhrNfX8vYADtsm9y6GCFbmYkuA474LRrEMC45XoqnXreh9YVsHh7Vr/a/0b/OIEIAYnj/nYnsXEoPRb2sL8wXjeUXCQIVD7rVArej4DtDoSfUS9eMkWI20C5HaKVVjZcLGpffP3P4DAz1tNu9qMD5hM3Nk85YcwfiZ0GaQaPKA8d4sU4kC8S17rysh40d0D9OtLcEbwjL61GuV21AFSGr85kiwW3RXNWYWkbKR/9AT179CvjQ0RvCm2RJWG14s2KlWy7PeVltfp0C7Gs6Zpt6FbJcpj6XrRaHyHh3/rtSJy9wc3bY5BPpCOIRYba0Ze8qka4Dsp/0ACQa7HAWnmhUGkSTccGY9IolIM2S8eVfe83FZM9W6vLunjbPuneY9UeF+1ER4JUEYZ8fph5iMP80wAXKVdrWmDJYBev/GkL5UugMdV5Jskn479AKjzg4/qq9wVkCtH7wiAJlaEUXUrMq44TfXo+m21nuyeGbRLIPOWz4EAN4ZI7LVHkExL6zBQwcrRpNEN8Jf2xN03GXE=
+    users:
+      secure: rlqp2tnhQ9urj0uVZA3oxsUeCe7bbLQQQB/vP8wdgu3hx5zXKQA/LTKwywhu0/PTe0EfKMIjzwKw8LIXvrJbhF+YvQnRQIBA5ZlRCmUi5ltUhGutY3C0xbvvrR0kXVYXajwMsg3BebnysfJfdkHYkhz719C697rr6Crg+NQpU7r0zCKHGwS43vIQ6xAeH9U/gbMjjPLvmAzzYzuVwfdxfVZo8ExLXLJ7zEDe7uKgbz95l429yf44vniOgtFq6kE0XnhinJwDO2s2Agb08hn2+XPfd9il+iqU0md6zXi+ou7UyGZmVF6eKV56yF3tr5H2uXriYF6ZAGQ2MkQoek4pg84juGLIBetm81KG7gG+vV4JdaLXWQEUDzgUGSC/9admXH3JpUB53ZmipzS2tLHBOjtTvzpone51EHTveJ+vu4Ch0Y4KBIS/tjCtm+90Rrj6EztMAGJiv+iOgxOQNJCDR250kEuKEbOoO4yMreGHpn0TFbuV9nbhnhl+HVw9qBnqh1qUxoRZmj9ePPrJ302WdkMAfNTb0djqqtjiesSUSSwVPccZrLK/tHBaJZWpjx2iCSPK891nQjhZfOtpeDe8oezxMnqrBfx6b9zYb8N/yrip7CjFxetkxwE9EfA8QLQB4IMek1CNOL3AHXHKv1flljREttgPQ101vjZ+cHFeWSk=
