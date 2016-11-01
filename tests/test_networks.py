@@ -28,10 +28,10 @@ class NetworkTest(unittest.TestCase):
         result_area_2 = basin_data[r2]['area']
         result_runoff_1 = result_area_1 * basin_data[r1]['c']
         result_runoff_2 = result_area_2 * basin_data[r2]['c']
-        self.assertEqual(
-            (control_area_1, control_area_2, control_runoff_1, control_runoff_2),
-            (result_area_1, result_area_2, result_runoff_1, result_runoff_2)
-        )
+        expected = (control_area_1, control_area_2, control_runoff_1, control_runoff_2)
+        produced = (result_area_1, result_area_2, result_runoff_1, result_runoff_2)
+        # self.assertEqual(produced, expected)
+        self.assertTupleEqual(produced, expected)
 
     def test_same_node_reach_from_func(self):
         network = networks.Network()

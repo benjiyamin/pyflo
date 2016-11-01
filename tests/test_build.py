@@ -18,8 +18,9 @@ class BuildTest(unittest.TestCase):
         p102 = s102.create_reach(node_2=o1_1, invert_1=7.0, invert_2=6.0,
                                  length=300.0, section=rc18)
         reaches = [node.reach for node in network.nodes if node.reach]
-        reaches = build.links_up_from_node(o1_1, reaches)
-        self.assertEqual(reaches, [p102, p101])
+        produced = build.links_up_from_node(o1_1, reaches)
+        expected = [p102, p101]
+        self.assertEqual(produced, expected)
 
     def test_reaches_ordered_down_to_node(self):
         network = nw.Network()
@@ -32,5 +33,6 @@ class BuildTest(unittest.TestCase):
         p102 = s102.create_reach(node_2=o1_1, invert_1=7.0, invert_2=6.0,
                                  length=300.0, section=rc18)
         reaches = [node.reach for node in network.nodes if node.reach]
-        reaches = build.links_down_to_node(o1_1, reaches)
-        self.assertEqual(reaches, [p101, p102])
+        produced = build.links_down_to_node(o1_1, reaches)
+        expected = [p101, p102]
+        self.assertEqual(produced, expected)

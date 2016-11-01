@@ -8,48 +8,48 @@ from numpy import genfromtxt
 from pyflo import terrain
 
 
-class SimpleTerrainTest(unittest.TestCase):
-
-    def setUp(self):
-        a = np.array([
-            [0.0, 0.0, 1.0],
-            [1.0, 0.0, 3.0],
-            [2.0, 0.0, 5.0],
-            [0.0, 1.0, 9.0],
-            [1.0, 1.0, 2.0],
-            [2.0, 1.0, 8.0],
-            [0.0, 2.0, 7.0],
-            [1.0, 2.0, 6.0],
-            [2.0, 2.0, 4.0],
-        ])
-        self.grid = terrain.elevation_grid(a, num=3)
-
-    def test_flow_directions_grid_from_xyz(self):
-        produced = terrain.flow_directions(self.grid)
-        expected = np.array([
-            [0.0, 4.0, 5.0],
-            [2.0, 3.0, 4.0],
-            [1.0, 2.0, 3.0],
-        ])
-        assert_array_equal(produced, expected)
-
-    def test_flow_magnitudes_grid_from_xyz(self):
-        produced = terrain.magnitudes(self.grid)
-        expected = np.array([
-            [9, 1, 1],
-            [1, 6, 1],
-            [1, 1, 1],
-        ])
-        assert_array_equal(produced, expected)
-
-    def test_high_points_grid_from_xyz(self):
-        produced = terrain.high_points(self.grid)
-        expected = np.array([
-            [0, 1, 1],
-            [1, 0, 1],
-            [1, 1, 1],
-        ]).astype(bool)
-        assert_array_equal(produced, expected)
+# class SimpleTerrainTest(unittest.TestCase):
+#
+#     def setUp(self):
+#         a = np.array([
+#             [0.0, 0.0, 1.0],
+#             [1.0, 0.0, 3.0],
+#             [2.0, 0.0, 5.0],
+#             [0.0, 1.0, 9.0],
+#             [1.0, 1.0, 2.0],
+#             [2.0, 1.0, 8.0],
+#             [0.0, 2.0, 7.0],
+#             [1.0, 2.0, 6.0],
+#             [2.0, 2.0, 4.0],
+#         ])
+#         self.grid = terrain.elevation_grid(a, num=3)
+#
+#     def test_flow_directions_grid_from_xyz(self):
+#         produced = terrain.flow_directions(self.grid)
+#         expected = np.array([
+#             [0.0, 4.0, 5.0],
+#             [2.0, 3.0, 4.0],
+#             [1.0, 2.0, 3.0],
+#         ])
+#         assert_array_equal(produced, expected)
+#
+#     def test_flow_magnitudes_grid_from_xyz(self):
+#         produced = terrain.magnitudes(self.grid)
+#         expected = np.array([
+#             [9, 1, 1],
+#             [1, 6, 1],
+#             [1, 1, 1],
+#         ])
+#         assert_array_equal(produced, expected)
+#
+#     def test_high_points_grid_from_xyz(self):
+#         produced = terrain.high_points(self.grid)
+#         expected = np.array([
+#             [0, 1, 1],
+#             [1, 0, 1],
+#             [1, 1, 1],
+#         ]).astype(bool)
+#         assert_array_equal(produced, expected)
 
 
 class DonutTerrainTest(unittest.TestCase):
@@ -88,10 +88,10 @@ class DonutTerrainTest(unittest.TestCase):
         expected = (4, 8)
         self.assertTupleEqual(produced, expected)
 
-    def test_flow_directions_grid_from_xyz(self):
-        produced = terrain.flow_directions(self.grid)
-        expected = genfromtxt('./tests/datasets/csv/donut_directions.csv', delimiter=',')
-        assert_array_equal(produced, expected)
+    # def test_flow_directions_grid_from_xyz(self):
+    #     produced = terrain.flow_directions(self.grid)
+    #     expected = genfromtxt('./tests/datasets/csv/donut_directions.csv', delimiter=',')
+    #     assert_array_equal(produced, expected)
     
     def test_watershed_shape(self):
         produced = terrain.basin_shape(self.grid, spill_pt=(3, 3))

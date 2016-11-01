@@ -13,21 +13,21 @@ class ImportIntensityFromJsonTest(unittest.TestCase):
             self.data = json.load(data_file)
 
     def test_intensity_equation(self):
-        data = self.data['equation']
-        control = '[a] + [b]*log([t]) + [c]*log([t])**2 + [d]*log([t])**3'
-        self.assertEqual(data, control)
+        produced = self.data['equation']
+        expected = '[a] + [b]*log([t]) + [c]*log([t])**2 + [d]*log([t])**3'
+        self.assertEqual(produced, expected)
 
     def test_intensity_x_key(self):
-        data = self.data['input_key']
-        control = '[t]'
-        self.assertEqual(data, control)
+        produced = self.data['input_key']
+        expected = '[t]'
+        self.assertEqual(produced, expected)
 
     def test_intensity_coefficients(self):
         zone10_data = [zone for zone in self.data['zones'] if zone['name'] == 'FDOT ZONE 10'][0]
         year03_data = [freq for freq in zone10_data['frequencies'] if freq['duration'] == 3][0]
-        data = year03_data['coefficients']
-        control = {'[a]': 11.32916, '[b]': -1.38557, '[c]': -0.36672, '[d]': 0.05012}
-        self.assertEqual(data, control)
+        produced = year03_data['coefficients']
+        expected = {'[a]': 11.32916, '[b]': -1.38557, '[c]': -0.36672, '[d]': 0.05012}
+        self.assertEqual(produced, expected)
 
 
 class OneReachGeopakTest(unittest.TestCase):
@@ -56,26 +56,26 @@ class OneReachGeopakTest(unittest.TestCase):
 
     def test_get_cumulative_runoff(self):
         basin_data = hydraulics.totaled_basin_data(self.node)
-        data = tuple(
+        produced = tuple(
             [round(r_data['c'] * r_data['area'], 1) for r, r_data in basin_data.items()]
         )
-        control = (round(0.276 * 1.58, 1),)
-        self.assertTupleEqual(data, control)
+        expected = (round(0.276 * 1.58, 1),)
+        self.assertTupleEqual(produced, expected)
 
     def test_flow(self):
-        data = tuple([round(r_data['flow'], 1) for r, r_data in self.data.items()])
-        control = (3.0,)
-        self.assertTupleEqual(data, control)
+        produced = tuple([round(r_data['flow'], 1) for r, r_data in self.data.items()])
+        expected = (3.0,)
+        self.assertTupleEqual(produced, expected)
 
     def test_hgl_upper(self):
-        data = tuple([round(r_data['hgl_1'], 1) for r, r_data in self.data.items()])
-        control = (5.0,)
-        self.assertTupleEqual(data, control)
+        produced = tuple([round(r_data['hgl_1'], 1) for r, r_data in self.data.items()])
+        expected = (5.0,)
+        self.assertTupleEqual(produced, expected)
 
     def test_hgl_lower(self):
-        data = tuple([round(r_data['hgl_2'], 1) for r, r_data in self.data.items()])
-        control = (4.9,)
-        self.assertTupleEqual(data, control)
+        produced = tuple([round(r_data['hgl_2'], 1) for r, r_data in self.data.items()])
+        expected = (4.9,)
+        self.assertTupleEqual(produced, expected)
 
 
 class FiveReachGeopakTest(unittest.TestCase):
@@ -119,26 +119,26 @@ class FiveReachGeopakTest(unittest.TestCase):
 
     def test_get_cumulative_runoff(self):
         basin_data = hydraulics.totaled_basin_data(self.node)
-        data = tuple(
+        produced = tuple(
             [round(r_data['c'] * r_data['area'], 2) for r, r_data in basin_data.items()]
         )
-        control = (0.94, 1.61, 0.95, 3.23, 3.23)
-        self.assertTupleEqual(data, control)
+        expected = (0.94, 1.61, 0.95, 3.23, 3.23)
+        self.assertTupleEqual(produced, expected)
 
     def test_flow(self):
-        data = tuple([round(r_data['flow'], 1) for r, r_data in self.data.items()])
-        control = (6.5, 10.4, 6.5, 20.9, 20.7)
-        self.assertTupleEqual(data, control)
+        produced = tuple([round(r_data['flow'], 1) for r, r_data in self.data.items()])
+        expected = (6.5, 10.4, 6.5, 20.9, 20.7)
+        self.assertTupleEqual(produced, expected)
 
     def test_hgl_upper(self):
-        data = tuple([round(r_data['hgl_1'], 1) for r, r_data in self.data.items()])
-        control = (26.3, 21.5, 26.4, 6.9, 6.3)
-        self.assertTupleEqual(data, control)
+        produced = tuple([round(r_data['hgl_1'], 1) for r, r_data in self.data.items()])
+        expected = (26.3, 21.5, 26.4, 6.9, 6.3)
+        self.assertTupleEqual(produced, expected)
 
     def test_hgl_lower(self):
-        data = tuple([round(r_data['hgl_2'], 1) for r, r_data in self.data.items()])
-        control = (21.5, 20.8, 21.2, 6.3, 6.1)
-        self.assertTupleEqual(data, control)
+        produced = tuple([round(r_data['hgl_2'], 1) for r, r_data in self.data.items()])
+        expected = (21.5, 20.8, 21.2, 6.3, 6.1)
+        self.assertTupleEqual(produced, expected)
 
 
 class FlatAnalysisTest(unittest.TestCase):
@@ -202,16 +202,16 @@ class FlatAnalysisTest(unittest.TestCase):
 
     def test_get_cumulative_runoff(self):
         basin_data = hydraulics.totaled_basin_data(self.node)
-        data = tuple(
+        produced = tuple(
             [round(r_data['c'] * r_data['area'], 1) for r, r_data in basin_data.items()]
         )
-        control = (0.5, 0.3, 0.5, 0.5, 0.9, 1.4, 0.2, 2.0)
-        self.assertTupleEqual(data, control)
+        expected = (0.5, 0.3, 0.5, 0.5, 0.9, 1.4, 0.2, 2.0)
+        self.assertTupleEqual(produced, expected)
 
     def test_physical_fall(self):
-        data = tuple([round(r.invert_1 - r.invert_2, 1) for r, r_data in self.data.items()])
-        control = (0.2, 0.2, 0.3, 0.3, 0.2, 0.9, 0.1, 0.3)
-        self.assertTupleEqual(data, control)
+        produced = tuple([round(r.invert_1 - r.invert_2, 1) for r, r_data in self.data.items()])
+        expected = (0.2, 0.2, 0.3, 0.3, 0.2, 0.9, 0.1, 0.3)
+        self.assertTupleEqual(produced, expected)
 
 
 class SteepAnalysisTest(unittest.TestCase):
@@ -266,18 +266,18 @@ class SteepAnalysisTest(unittest.TestCase):
 
     def test_get_cumulative_runoff(self):
         basin_data = hydraulics.totaled_basin_data(self.node)
-        data = tuple(
+        produced = tuple(
             [round(r_data['c'] * r_data ['area'], 2) for r, r_data in basin_data.items()]
         )
-        control = (0.16, 0.96, 1.44, 1.84, 2.72)
-        self.assertTupleEqual(data, control)
+        expected = (0.16, 0.96, 1.44, 1.84, 2.72)
+        self.assertTupleEqual(produced, expected)
 
     def test_flow(self):
-        data = tuple([round(r_data['flow'], 1) for r, r_data in self.data.items()])
-        control = (1.0, 5.8, 8.3, 10.4, 15.1)
-        self.assertTupleEqual(data, control)
+        produced = tuple([round(r_data['flow'], 1) for r, r_data in self.data.items()])
+        expected = (1.0, 5.8, 8.3, 10.4, 15.1)
+        self.assertTupleEqual(produced, expected)
 
     def test_physical_fall(self):
-        data = tuple([round(r.invert_1 - r.invert_2, 2) for r, r_data in self.data.items()])
-        control = (0.5, 0.5, 4.2, 4.0, 1.0)
-        self.assertTupleEqual(data, control)
+        produced = tuple([round(r.invert_1 - r.invert_2, 2) for r, r_data in self.data.items()])
+        expected = (0.5, 0.5, 4.2, 4.0, 1.0)
+        self.assertTupleEqual(produced, expected)
