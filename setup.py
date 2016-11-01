@@ -19,7 +19,7 @@ setup(
     description='PyFlo is an open-source library written in Python for performing hydraulic and '
                 'hydrology stormwater analysis. ',
     license='GNU General Public License v3 (GPLv3), see LICENSE.md',
-    keywords='hydraulics hydrology storm simulation,',
+    keywords='hydraulics hydrology storm simulation',
     url='https://benjiyamin.github.io/pyflo',
     packages=['pyflo'],
     long_description=read('README.md'),
