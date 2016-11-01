@@ -6,6 +6,7 @@
 """
 
 import math
+from typing import Tuple
 
 from scipy import optimize
 
@@ -99,31 +100,67 @@ class Weir(Link):
 
 class Reach(Link):
 
-    def __init__(self, invert_1, invert_2, length, section, k_minor=None, **kwargs):
+    def __init__(self, section, slope=None, inverts=None, length=None, k_minor=None, **kwargs):
         """A link between two nodes with hydraulic attributes, dimensions, and methods.
 
         Args:
-            invert_1 (float): The bottom elevation at the upstream ("from") end, in :math:`feet`.
-            invert_2 (float): The bottom elevation at the downstream ("to") end, in :math:`feet`.
-            length (float): The total longitudinal distance, end-to-end, in :math:`feet`.
             section (sections.Section): The cross sectional shape.
+            slope (float): The rise/run of the reach, :math:`feet`/:math:`feet`.
+            inverts (Tuple[float, float]): The elevations of each bottom end of the reach, in
+                :math:`feet`. The first value is the upstream ("from") end, while the second value
+                is the downstream ("to") end.
+            length (float): The total longitudinal distance, end-to-end, in :math:`feet`.
             k_minor (float): An optional minor loss coefficient for including minor losses.
 
         """
         super(Reach, self).__init__(**kwargs)
-        self.invert_1 = invert_1
-        self.invert_2 = invert_2
-        self.length = length
+        self._slope = slope
+        self._inverts = inverts
+        self._length = length
         self.section = section
         self.k_minor = k_minor
 
     @property
-    def drop(self):
-        return self.invert_1 - self.invert_2
+    def length(self):
+        if self._length:
+            return self._length
+        raise AttributeError('reach.length not defined.')
+
+    @length.setter
+    def length(self, value):
+        self._length = value
 
     @property
-    def long_slope(self):
-        return self.drop / self.length
+    def drop(self):
+        if self.inverts:
+            return self.inverts[0] - self.inverts[1]
+        elif self.slope and self.length:
+            return self.slope * self.length
+        else:
+            raise AttributeError('If inverts not defined, both slope and length must be defined.')
+
+    @property
+    def inverts(self):
+        if self._inverts:
+            return self._inverts
+        raise AttributeError('reach.inverts not defined.')
+
+    @inverts.setter
+    def inverts(self, value):
+        self._inverts = value
+
+    @property
+    def slope(self):
+        if self._slope:
+            return self._slope
+        elif self.inverts and self.length:
+            return self.drop / self.length
+        else:
+            raise AttributeError('If slope not defined, both inverts and length must be defined.')
+
+    @slope.setter
+    def slope(self, value):
+        self._slope = value
 
     def velocity(self, depth):
         """Get the velocity of a partial flow section, given a depth from the invert.
@@ -136,7 +173,7 @@ class Reach(Link):
 
         """
         r_h = self.section.hyd_radius(depth)
-        return constants.K_MANNING * r_h**(2.0/3.0) * self.long_slope**0.5 / self.section.n
+        return constants.K_MANNING * r_h**(2.0/3.0) * self.slope ** 0.5 / self.section.n
 
     def normal_flow(self, depth):
         """Get the flow of a partial flow section, given a depth from the invert.
@@ -182,7 +219,7 @@ class Reach(Link):
             b = depth
         else:
             raise ValueError("Either 'average' or 'maximum' must be defined for the method arg.")
-        return constants.SG_WATER * b * self.long_slope  # Replace or add option for energy slope
+        return constants.SG_WATER * b * self.slope  # Replace or add option for energy slope
 
     def critical_depth_accuracy(self, depth, flow):
         """Check solution convergence for critical depth given a trial value.
@@ -394,7 +431,8 @@ class Reach(Link):
 
         """
         hgl_lower_1 = stage_2
-        hgl_lower_2 = self.invert_2 + self.normal_depth(flow)
+        # hgl_lower_2 = self.invert_2 + self.normal_depth(flow)
+        hgl_lower_2 = self.inverts[1] + self.normal_depth(flow)
         return max(hgl_lower_1, hgl_lower_2)
 
     def hgl_1(self, stage_2, flow):
@@ -409,7 +447,8 @@ class Reach(Link):
 
         """
         hgl_lower = self.hgl_2(stage_2, flow)
-        hgl_upper_1 = self.invert_1 + self.normal_depth(flow)
+        # hgl_upper_1 = self.invert_1 + self.normal_depth(flow)
+        hgl_upper_1 = self.inverts[0] + self.normal_depth(flow)
         hgl_upper_2 = self.stage_1(hgl_lower, flow)
         return max(hgl_upper_1, hgl_upper_2)
 
@@ -426,7 +465,8 @@ class Reach(Link):
         """
         y_1 = depth
         h_v = self.velocity_loss(y_1, flow)
-        z_1 = self.invert_1
+        # z_1 = self.invert_1
+        z_1 = self.inverts[0]
         return z_1 + y_1 + h_v
 
     def energy_2(self, depth, stage_2, flow):
@@ -441,9 +481,11 @@ class Reach(Link):
             float: Total downstream energy head.
 
         """
-        y_2 = stage_2 - self.invert_2
+        # y_2 = stage_2 - self.invert_2
+        y_2 = stage_2 - self.inverts[1]
         h_v = self.velocity_loss(y_2, flow)
-        z_2 = self.invert_2
+        # z_2 = self.invert_2
+        z_2 = self.inverts[1]
         h_f1 = self.friction_loss(depth, flow)
         h_f2 = self.friction_loss(y_2, flow)
         h_f = (h_f1+h_f2) / 2.0
@@ -464,7 +506,8 @@ class Reach(Link):
             float: The difference between energy on each end of the reach.
 
         """
-        depth = stage_1 - self.invert_1
+        # depth = stage_1 - self.invert_1
+        depth = stage_1 - self.inverts[0]
         e_upper = self.energy_1(depth, flow)
         e_lower = self.energy_2(depth, stage_2, flow)
         return e_upper - e_lower
@@ -480,16 +523,20 @@ class Reach(Link):
             float: The depth where steady state condition occurs.
 
         """
-        d_lower = stage_2 - self.invert_2
+        # d_lower = stage_2 - self.invert_2
+        d_lower = stage_2 - self.inverts[1]
         d_crit = self.critical_depth(flow)
-        bound_a = self.invert_1 + 1e-12
-        bound_b = self.invert_1 + d_crit
+        # bound_a = self.invert_1 + 1e-12
+        bound_a = self.inverts[0] + 1e-12
+        # bound_b = self.invert_1 + d_crit
+        bound_b = self.inverts[0] + d_crit
         bound_c = None
         for i in range(1, 100):
             d_trial = i
             if self.section.rise:
                 d_trial *= self.section.rise
-            hw_trial = self.invert_1 + d_trial
+            # hw_trial = self.invert_1 + d_trial
+            hw_trial = self.inverts[0] + d_trial
             if self.stage_1_accuracy(hw_trial, stage_2, flow) > 1.0:
                 bound_c = hw_trial
                 break
@@ -514,7 +561,8 @@ class Reach(Link):
         raise Exception('Maximum iterations reached while trying to find an upper bound')
 
     def flow_accuracy(self, flow, stage_1, stage_2):
-        depth = stage_1 - self.invert_1
+        # depth = stage_1 - self.invert_1
+        depth = stage_1 - self.inverts[0]
         e_upper = self.energy_1(depth, flow)
         e_lower = self.energy_2(depth, stage_2, flow)
         return e_upper - e_lower
