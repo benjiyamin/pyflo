@@ -1,7 +1,7 @@
 
 from typing import Tuple
 
-import scipy.ndimage as ndimage
+from scipy import ndimage
 from matplotlib.mlab import griddata
 import numpy
 
@@ -19,6 +19,17 @@ SE = 7
 
 
 def elevation_grid(array, num=50):
+    """Create a mesh of elevation values interpolated from an array of (x, y, z) points.
+
+    Args:
+        array (numpy.ndarray): An array of (x, y, z) points.
+        num (int): Number of samples to generate in each the x and y directions. Default is 50. Must
+            be non-negative.
+
+    Returns:
+        numpy.ndarray: An array of elevation values.
+
+    """
     x, y, z = array[:, 0], array[:, 1], array[:, 2]
     xi = numpy.linspace(min(x), max(x), num=num)
     yi = numpy.linspace(min(y), max(y), num=num)
@@ -26,81 +37,20 @@ def elevation_grid(array, num=50):
     return grid
 
 
-def flow_direction(array):
-    min_value = numpy.nanmin(array)
-    if array[4] == min_value:
-        d = C
-    elif array[1] == min_value:
-        d = N
-    elif array[3] == min_value:
-        d = W
-    elif array[7] == min_value:
-        d = S
-    elif array[5] == min_value:
-        d = E
-    elif array[2] == min_value:
-        d = NE
-    elif array[0] == min_value:
-        d = NW
-    elif array[6] == min_value:
-        d = SW
-    elif array[8] == min_value:
-        d = SE
-    else:
-        raise ValueError
-    return d
-
-
-def flow_directions(grid):
-    d = ndimage.generic_filter(grid, flow_direction, size=3, mode='constant', cval=numpy.nan)
-    return d
-
-
-def magnitudes(grid):
-    a = flow_directions(grid)
-    b = numpy.zeros(a.shape).astype(int)
-    for i, x in enumerate(a):
-        for j, y in enumerate(x):
-            trigger = False
-            row_i, col_i = i, j
-            while not trigger:
-                z = a[row_i, col_i]
-                if z >= 0:
-                    b[row_i, col_i] += 1
-                    if z == NW:
-                        row_i -= 1
-                        col_i -= 1
-                    elif z == N:
-                        row_i -= 1
-                    elif z == NE:
-                        row_i -= 1
-                        col_i += 1
-                    elif z == W:
-                        col_i -= 1
-                    elif z == E:
-                        col_i += 1
-                    elif z == SW:
-                        row_i += 1
-                        col_i -= 1
-                    elif z == S:
-                        row_i += 1
-                    elif z == SE:
-                        row_i += 1
-                        col_i += 1
-                    else:
-                        trigger = True
-                else:
-                    trigger = True
-    return b
-
-
-def high_points(grid):
-    a = magnitudes(grid)
-    b = a <= 1
-    return b
-
-
 def low_address(grid, spill_pt):
+    """Get the lowest value a spill point is connected to in terms of lower elevations.
+
+    Args:
+        grid (numpy.ndarray): An array of elevation values.
+        spill_pt (Tuple[int, int]): The address of the spill point within the grid formatted as
+            such a tuple with the format (row index, column index).
+
+    Returns:
+        Tuple[int, int]: The address of the lowest point the spill point is connected to in terms of
+            lower elevations.
+
+    """
+    grid = numpy.array(grid)
     queue = spill_pt
     nrows, ncols = grid.shape
     while queue:
@@ -148,16 +98,18 @@ def basin_shape(grid, spill_pt):
     spill point.
 
     Args:
-        grid (array_like): An array of elevation values
+        grid (numpy.ndarray): An array of elevation values.
         spill_pt (Tuple[int, int]): The address of the spill point within the grid formatted as
-            such a tuple with the format (row index, column index)
+            such a tuple with the format (row index, column index).
 
     Returns:
+        numpy.ndarray: An array of boolean values. Cells marked true are part of the same basin as a
+            the input spill point.
 
     """
+    grid = numpy.array(grid)
     neighbors = [(-1, -1), (-1, 0), (-1, 1), (0, 1), (1, 1), (1, 0), (1, -1), (0, -1)]
     b = numpy.zeros(grid.shape).astype(bool)
-    # row_spill, col_spill = spill_pt
     row_start, col_start = low_address(grid, spill_pt)
     queue = [(row_start, col_start)]  # push start coordinate on stack
     nrows, ncols = grid.shape
@@ -174,3 +126,77 @@ def basin_shape(grid, spill_pt):
 
 def basin_area(grid, row_spill, col_spill):
     pass
+
+
+# def flow_direction(array):
+#     min_value = numpy.nanmin(array)
+#     if array[4] == min_value:
+#         d = C
+#     elif array[1] == min_value:
+#         d = N
+#     elif array[3] == min_value:
+#         d = W
+#     elif array[7] == min_value:
+#         d = S
+#     elif array[5] == min_value:
+#         d = E
+#     elif array[2] == min_value:
+#         d = NE
+#     elif array[0] == min_value:
+#         d = NW
+#     elif array[6] == min_value:
+#         d = SW
+#     elif array[8] == min_value:
+#         d = SE
+#     else:
+#         raise ValueError
+#     return d
+#
+#
+# def flow_directions(grid):
+#     d = ndimage.generic_filter(grid, flow_direction, size=3, mode='constant', cval=numpy.nan)
+#     return d
+#
+#
+# def magnitudes(grid):
+#     a = flow_directions(grid)
+#     b = numpy.zeros(a.shape).astype(int)
+#     for i, x in enumerate(a):
+#         for j, y in enumerate(x):
+#             trigger = False
+#             row_i, col_i = i, j
+#             while not trigger:
+#                 z = a[row_i, col_i]
+#                 if z >= 0:
+#                     b[row_i, col_i] += 1
+#                     if z == NW:
+#                         row_i -= 1
+#                         col_i -= 1
+#                     elif z == N:
+#                         row_i -= 1
+#                     elif z == NE:
+#                         row_i -= 1
+#                         col_i += 1
+#                     elif z == W:
+#                         col_i -= 1
+#                     elif z == E:
+#                         col_i += 1
+#                     elif z == SW:
+#                         row_i += 1
+#                         col_i -= 1
+#                     elif z == S:
+#                         row_i += 1
+#                     elif z == SE:
+#                         row_i += 1
+#                         col_i += 1
+#                     else:
+#                         trigger = True
+#                 else:
+#                     trigger = True
+#     return b
+#
+#
+# def high_points(grid):
+#     a = magnitudes(grid)
+#     b = a <= 1
+#     return b
