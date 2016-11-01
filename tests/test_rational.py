@@ -278,6 +278,6 @@ class SteepAnalysisTest(unittest.TestCase):
         self.assertTupleEqual(produced, expected)
 
     def test_physical_fall(self):
-        produced = tuple([round(r.invert_1 - r.invert_2, 2) for r, r_data in self.data.items()])
+        produced = tuple([round(r.inverts[0] - r.inverts[1], 2) for r, r_data in self.data.items()])
         expected = (0.5, 0.5, 4.2, 4.0, 1.0)
         self.assertTupleEqual(produced, expected)
