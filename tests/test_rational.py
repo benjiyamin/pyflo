@@ -205,13 +205,13 @@ class FlatAnalysisTest(unittest.TestCase):
         produced = tuple(
             [round(r_data['c'] * r_data['area'], 1) for r, r_data in basin_data.items()]
         )
-        expected = (0.5, 0.3, 0.5, 0.5, 0.9, 1.4, 0.2, 2.0)
+        expected = (0.3, 0.5, 0.5, 0.5, 0.9, 1.4, 0.2, 2.0)
         self.assertTupleEqual(produced, expected)
 
     def test_physical_fall(self):
-        data = tuple([round(r.inverts[0] - r.inverts[1], 1) for r, r_data in self.data.items()])
-        control = (0.2, 0.2, 0.3, 0.3, 0.2, 0.9, 0.1, 0.3)
-        self.assertTupleEqual(data, control)
+        produced = tuple([round(r.inverts[0] - r.inverts[1], 1) for r, r_data in self.data.items()])
+        expected = (0.2, 0.3, 0.3, 0.2, 0.2, 0.9, 0.1, 0.3)
+        self.assertTupleEqual(produced, expected)
 
 
 class SteepAnalysisTest(unittest.TestCase):
