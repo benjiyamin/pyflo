@@ -20,3 +20,6 @@ venv/
 scripts/
 archive/
 site/
+
+# OS generated
+.DS_Store
