@@ -1,3 +1,9 @@
+"""Functions for creating, analyzing, and manipulating 3D geometry.
+
+:copyright: 2016, See AUTHORS for more details.
+:license: GNU General Public License, See LICENSE for more details.
+
+"""
 
 from typing import Tuple
 
