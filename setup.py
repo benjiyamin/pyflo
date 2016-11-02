@@ -1,6 +1,6 @@
 
 import os
-from setuptools import setup
+from setuptools import setup, find_packages
 
 
 def read(filename):
@@ -13,7 +13,7 @@ def readlines(filename):
 
 setup(
     name='pyflo',
-    version='0.3.2',
+    version='0.3.3',
     author='benjiyamin, see AUTHORS.md',
     author_email='benjiyamin@gmail.com',
     description='PyFlo is an open-source library written in Python for performing hydraulic and '
@@ -21,7 +21,8 @@ setup(
     license='GNU General Public License v3 (GPLv3), see LICENSE.md',
     keywords='hydraulics hydrology storm simulation',
     url='https://benjiyamin.github.io/pyflo',
-    packages=['pyflo'],
+    packages=find_packages(exclude=["tests"]),
+    # packages=['pyflo'],
     long_description=read('README.md'),
     install_requires=readlines('requirements/production.txt'),
     classifiers=[
