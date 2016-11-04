@@ -342,11 +342,3 @@ class Irregular(Section):
             else:
                 lowest = lowest
         return lowest
-
-# Usage:
-if __name__ == '__main__':
-    points = [(0.0, 12.5), (8.5, 7.6), (10.0, 2.1), (13.5, 8.5), (20.0, 12.1)]
-    irr = Irregular(points)
-    print(irr.get_new_vertices(5))
-    perimeter = irr.wet_perimeter(6)
-    print(perimeter)
