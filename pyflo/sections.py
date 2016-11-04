@@ -213,14 +213,22 @@ class Irregular(Section):
         self.points = points
     
     def get_new_vertices(self, depth):
+        """Get the new vertices of the cross section including
+            the intersection of ground line with the water surface, given a depth from the
+            lowest point.
+
+        Args:
+            depth (float): Depth, in :math:`feet`
+
+        Returns:
+            list of tuples (float) in (x, y) format
+
         """
-        Get the new vertices including the intersection with the water surface
-        with the cross section (ground line)
-        """
+
         left = 0                # Water surface intersection at left
         right = 0               # Water surface intersection at right
         new_points = []
-        water_elevation = self.get_lowest_elev(self.points) + depth
+        water_elevation = self.get_lowest_elev + depth
         
         for index in range(len(self.points)):
             x, y = self.points[index]
@@ -234,7 +242,7 @@ class Irregular(Section):
                     x2 = self.points[index][0]
                     y2 = self.points[index][1]
                     x3 = (water_elevation - y1) * (x2 - x1) / (y2 - y1) + x1
-                    new_points.append((x3, water_elevation))  # Add this point as the first new point from the left
+                    new_points.append((x3, water_elevation))
 
             if right == 0:
                 if left == 1:
@@ -251,18 +259,20 @@ class Irregular(Section):
                 if right == 0:
                     new_points.append(self.points[index])
         return new_points
-                    
-    
+
     def flow_area(self, depth):
-        """
-        Implementation of Shoelace Formula in finding the area of a closed
-        polygon bounded by vertices
-        :param vertices:
-        :return:
+        """Get the cross sectional area of flow, given a depth from the lowest point.
+
+        Args:
+            depth (float): Depth, in :math:`feet`
+
+        Returns:
+            float: Wet area, in :math:`feet`.
+
         """
         
         vertices = self.get_new_vertices(depth)
-        n = len(vertices) # of vertices
+        n = len(vertices)
         area = 0.0
         for i in range(n):
             j = (i + 1) % n
@@ -272,29 +282,37 @@ class Irregular(Section):
         return area
     
     def wet_perimeter(self, depth):
+        """Get the wet perimeter of flow, given a depth from the lowest point.
+
+        Args:
+            depth (float): Depth, in :math:`feet`
+
+        Returns:
+            float: Wet perimeter, in :math:`feet`.
+
         """
-        Get the total distance covered by multiple points
-        :param points:
-        :return:
-        """
-        p = 0.0                                 # perimeter
-        new_points = self.get_new_vertices(depth)    # new points including intersections
+        p = 0.0
+        new_points = self.get_new_vertices(depth)
         n = len(new_points)
         for i in range(n-1):
-            p1 = points[i]
-            p2 = points[i+1]
+            p1 = new_points[i]
+            p2 = new_points[i+1]
             p += self.point_distance([p1, p2])
 
         return p
     
-    def point_distance(self, points):
+    def point_distance(self, two_points):
+        """Get the distance between two given points.
+
+        Args:
+            two_points (float): Depth, in :math:`feet`
+
+        Returns:
+            float: Distance between two points, in :math:`feet`.
+
         """
-        Get the distance between two points
-        :param points:
-        :return: dist
-        """
-        p1 = points[0]
-        p2 = points[1]
+        p1 = two_points[0]
+        p2 = two_points[1]
         x1, y1 = p1
         x2, y2 = p2
 
@@ -302,17 +320,21 @@ class Irregular(Section):
 
         return dist
     
-    def get_lowest_elev(self, points):
-        """
-        Get the lowest point from the vertices
-        :param points:
-        :return: lowest
+    @property
+    def get_lowest_elev(self):
+        """Get the elevation of the lowest point of the cross section.
+
+        Args:
+
+        Returns:
+            float: Elevation, in :math:`feet`.
+
         """
         elevs = []                  # List of elevations (ordinates)
         lowest = 0                  # Initial value of lowest
-        for point in points:
+        for point in self.points:
             elevs.append(point[1])  # Iterate through the points and collect the ordinates
-        for i in range(len(elevs)): # Find the lowest in the list of ordinates
+        for i in range(len(elevs)):  # Find the lowest in the list of ordinates
             if i == len(elevs):
                 break
             if elevs[i] < lowest:
@@ -322,9 +344,9 @@ class Irregular(Section):
         return lowest
 
 # Usage:
-#if __name__ == '__main__':
-#    points = [(0.0, 12.5), (8.5, 7.6), (10.0, 2.1), (13.5, 8.5), (20.0, 12.1)]
-#    irr = Irregular(points)
-#    print(irr.get_new_vertices(5))
-#    perimeter = irr.wet_perimeter(6)
-#    print(perimeter)
+if __name__ == '__main__':
+    points = [(0.0, 12.5), (8.5, 7.6), (10.0, 2.1), (13.5, 8.5), (20.0, 12.1)]
+    irr = Irregular(points)
+    print(irr.get_new_vertices(5))
+    perimeter = irr.wet_perimeter(6)
+    print(perimeter)
