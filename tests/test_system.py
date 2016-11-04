@@ -7,8 +7,8 @@ from pyflo import system
 class TupleFromCsvTest(unittest.TestCase):
 
     def test_runoff_csv(self):
-        data = system.tuple_list_from_csv('./resources/distributions/runoff/scs256.csv')
-        control = [
+        produced = system.tuple_list_from_csv('./resources/distributions/runoff/scs256.csv')
+        expected = [
             (0.000, 0.000),
             (0.200, 0.150),
             (0.400, 0.320),
@@ -56,11 +56,11 @@ class TupleFromCsvTest(unittest.TestCase):
             (8.800, 0.010),
             (9.000, 0.000)
         ]
-        self.assertListEqual(data, control)
+        self.assertListEqual(produced, expected)
 
     def test_rainfall_csv(self):
-        data = system.tuple_list_from_csv('./resources/distributions/rainfall/nrcsiii.csv')
-        control = [
+        produced = system.tuple_list_from_csv('./resources/distributions/rainfall/nrcsiii.csv')
+        expected = [
             (0.000, 0.000),
             (0.010, 0.002),
             (0.021, 0.005),
@@ -159,4 +159,4 @@ class TupleFromCsvTest(unittest.TestCase):
             (0.990, 0.998),
             (1.000, 1.000)
         ]
-        self.assertListEqual(data, control)
+        self.assertListEqual(produced, expected)

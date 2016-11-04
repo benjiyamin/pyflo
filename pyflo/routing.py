@@ -7,6 +7,7 @@
 
 import math
 from typing import List, Tuple, Dict
+from collections import OrderedDict
 
 import numpy as np
 from scipy import optimize, interpolate
@@ -179,40 +180,41 @@ class Analysis(object):
         """
 
         Returns:
-            List[Dict]
+            Dict[links.Link]
 
         """
-        links_ord = build.links_up_from_node(self.node, self.node.network.links)
-        results = []
-        for link in links_ord:
+        o_links = build.links_up_from_node(self.node, self.node.network.links)
+        results = OrderedDict()
+        for link in o_links:
             hydrograph_data = None
             if link.node_1.basin and self.rain_dist:
-                flood_hydrograph = link.node_1.basin.flood_hydrograph(self.rain_dist, self.interval)
-                hydrograph_data = flood_hydrograph.data
+                fh = link.node_1.basin.flood_hydrograph(self.rain_dist, self.interval)
+                hydrograph_data = fh.data
             stage = link.node_1.reservoir.start_stage if link.node_1.reservoir else self.tw
             storage = link.node_1.reservoir.storage(stage) if link.node_1.reservoir else 0.0
-            line = {
-                'link': link,
+            link_data = {
                 'hydrograph_data': hydrograph_data,
                 'data': [
                     {'time': 0.0, 'inflow': 0.0, 'outflow': 0.0, 'storage': storage, 'stage': stage}
                 ]
             }
-            results.append(line)
+            results[link] = link_data
         return results
 
     def stage_accuracy(self, stage, inflow, link, results):
-        result = [result for result in results if result['link'] == link][0]
+        result = results[link]
         data = result['data']
-        line = data[-1]
+        line = data[-1]  # Last time results
         inflow_1 = line['inflow']
         outflow_1 = line['outflow']
         storage_1 = line['storage']
         storage_2 = link.node_1.reservoir.storage(stage) if link.node_1.reservoir else 0.0
-        if link.node_2 == self.node:
-            tw = self.tw
-        else:
-            tw = [r['data'][-1]['stage'] for r in results if r['link'].node_1 == link.node_2][0]
+        tw = self.tw
+        if link.node_2 != self.node:
+            for l, l_data in results.items():
+                if l.node_1 == link.node_2:
+                    tw = l[link]['data'][-1]['stage']
+                    break
         outflow_2 = link.flow(stage, tw)
         inflow_ave = (inflow_1+inflow) / 2.0
         outflow_ave = (outflow_1+outflow_2) / 2.0
@@ -226,7 +228,7 @@ class Analysis(object):
         Args:
             inflow (float):
             link (links.Link):
-            results (List[Dict]):
+            results (Dict[links.Link]):
 
         Returns:
             List[Dict]:
@@ -245,23 +247,19 @@ class Analysis(object):
         time_steps = math.ceil(self.duration / self.interval)
         for i in range(1, time_steps + 1):
             time = i * self.interval
-            for j in results:
-                link = j['link']
-                data = j['data']
-                hydrograph_data = j['hydrograph_data']
+            for link, link_data in results.items():
+                hydrograph_data = link_data['hydrograph_data']
                 inflow = hydrograph_data[i][1] if hydrograph_data else 0.0
                 stage = self.stage(inflow, link, results)
 
-                ds_query = [k for k in results if k['link'].node_1 == link.node_2]
-                if link.node_2 == self.node:
-                    tw = self.tw
-                elif ds_query:
-                    ds_result = ds_query[0]
-                    ds_data = ds_result['data']
+                ds_query = [(k, k_data) for k, k_data in results.items() if k.node_1 == link.node_2]
+
+                if ds_query:
+                    ds_link, ds_data = ds_query[0]
                     ds_line = ds_data[-1]
                     tw = ds_line['stage']
                 else:
-                    tw = link.invert_2
+                    tw = self.tw
 
                 storage = link.node_1.reservoir.storage(stage) if link.node_1.reservoir else 0.0
                 outflow = link.flow(stage, tw)
@@ -272,13 +270,11 @@ class Analysis(object):
                     'storage': storage,
                     'stage': stage
                 }
-                data.append(line)
+                link_data['data'].append(line)
                 if ds_query:
-                    ds_result = ds_query[0]
-                    ds_link = ds_result['link']
+                    ds_link, ds_data = ds_query[0]
                     if ds_link.node_1.reservoir:
-                        ds_data = ds_result['data']
-                        ds_line = ds_data[-1]
+                        ds_line = ds_data[-1]  # Last time results
                         ds_storage = ds_line['storage'] + outflow * self.interval * 60.0 * 60.0
                         ds_line['storage'] = ds_storage
                         ds_line['stage'] = ds_link.node_1.reservoir.stage(ds_storage)

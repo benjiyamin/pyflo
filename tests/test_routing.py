@@ -21,8 +21,8 @@ class ReservoirTest(unittest.TestCase):
         self.reservoir = routing.Reservoir(contours=contours)
 
     def test_reorder_on_init(self):
-        data = self.reservoir.contours
-        control = [
+        produced = self.reservoir.contours
+        expected = [
             (01.5, 6.07 * 43560.0),
             (14.0, 0.75 * 43560.0),
             (17.0, 0.81 * 43560.0),
@@ -30,13 +30,13 @@ class ReservoirTest(unittest.TestCase):
             (26.0, 4.46 * 43560.0),
             (30.5, 5.10 * 43560.0),
         ]
-        self.assertListEqual(data, control)
+        self.assertListEqual(produced, expected)
 
     def test_solve_stage(self):
-        control_elevation = 20.0
-        storage = self.reservoir.storage(control_elevation)
-        elevation = self.reservoir.stage(storage)
-        self.assertAlmostEqual(control_elevation, elevation)
+        expected = 20.0
+        storage = self.reservoir.storage(expected)
+        produced = self.reservoir.stage(storage)
+        self.assertAlmostEqual(produced, expected)
 
 
 class BleedDownTest(unittest.TestCase):
@@ -55,25 +55,26 @@ class BleedDownTest(unittest.TestCase):
         out = network.create_node()
         diameter = 3.25 / 12.0
         ci3 = sections.Circle(diameter=diameter)
-        nw5.create_weir(node_2=out, invert=23.5, k_orif=0.6, k_weir=3.2, section=ci3)
+        self.weir = nw5.create_weir(node_2=out, invert=23.5, k_orif=0.6, k_weir=3.2, section=ci3)
         interval = 5.0 / 60.0
         self.analysis = routing.Analysis(node=out, tw=0.0, duration=2.0, interval=interval)
 
     def test_storage_stage_below_bottom(self):
-        storage = self.reservoir.storage(15.0)
-        self.assertEqual(storage, 0.0)
+        produced = self.reservoir.storage(15.0)
+        expected = 0.0
+        self.assertEqual(produced, expected)
 
     def test_storage_stage_above_top(self):
-        storage = self.reservoir.storage(30.0)
-        control = self.reservoir.storage(29.8)
-        self.assertGreater(storage, control)
+        produced = self.reservoir.storage(30.0)
+        expected = self.reservoir.storage(29.8)
+        self.assertGreater(produced, expected)
 
     def test_node_solution_results(self):
         results = self.analysis.node_solution_results()
-        data = results[0]['data']
-        last_stage = data[-1]['stage']
-        control = 25.28
-        self.assertAlmostEqual(last_stage, control, 2)
+        data = results[self.weir]['data']
+        produced = data[-1]['stage']
+        expected = 25.28
+        self.assertAlmostEqual(produced, expected, 2)
 
 
 class BasinTest(unittest.TestCase):
@@ -112,19 +113,19 @@ class BasinTest(unittest.TestCase):
         ]
 
     def test_peak_time(self):
-        data = self.basin.peak_time
-        control = 1.53
-        self.assertAlmostEqual(data, control, 2)
+        produced = self.basin.peak_time
+        expected = 1.53
+        self.assertAlmostEqual(produced, expected, 2)
 
     def test_peak_runoff(self):
-        data = self.basin.peak_runoff
-        control = 1455.0
-        self.assertAlmostEqual(data, control, -1)
+        produced = self.basin.peak_runoff
+        expected = 1455.0
+        self.assertAlmostEqual(produced, expected, -1)
 
     def test_unit_hydrograph_by_interval(self):
         hydrograph = self.basin.unit_hydrograph(interval=0.3)
-        data = [(round(line[0], 1), round(line[1], 0)) for line in hydrograph.tolist()]
-        control = [
+        produced = [(round(line[0], 1), round(line[1], 0)) for line in hydrograph.tolist()]
+        expected = [
             (0.0, 0.0),
             (0.3, 141.0),
             (0.6, 435.0),
@@ -153,13 +154,13 @@ class BasinTest(unittest.TestCase):
             (7.5, 2.0),
             (7.8, 0.0)
         ]
-        self.assertListEqual(data, control)
+        self.assertListEqual(produced, expected)
 
     def test_rainfall_hydrograph(self):
         rainfall_dist = numpy.array(self.ratio_pairs)
         rainfall_depths = rainfall_dist * [6.0, 5.0]
-        data = [(round(line[0], 1), round(line[1], 2)) for line in rainfall_depths.tolist()]
-        control = [
+        produced = [(round(line[0], 1), round(line[1], 2)) for line in rainfall_depths.tolist()]
+        expected = [
             (0.0, 0.00),
             (0.3, 0.37),
             (0.6, 0.87),
@@ -182,17 +183,17 @@ class BasinTest(unittest.TestCase):
             (5.7, 4.90),
             (6.0, 5.00)
         ]
-        self.assertListEqual(data, control)
+        self.assertListEqual(produced, expected)
 
     def test_runoff_depth(self):
         rainfall_dist = numpy.array(self.ratio_pairs)
         rainfall_depths = rainfall_dist * [6.0, 5.0]
         data = rainfall_depths.tolist()
-        rounded_data = []
+        produced = []
         for line in data:
             runoff_depth = self.basin.runoff_depth(line[1])
-            rounded_data.append((round(line[0], 1), round(runoff_depth, 2)))
-        control = [
+            produced.append((round(line[0], 1), round(runoff_depth, 2)))
+        expected = [
             (0.0, 0.00),
             (0.3, 0.00),
             (0.6, 0.12),
@@ -215,14 +216,14 @@ class BasinTest(unittest.TestCase):
             (5.7, 3.28),
             (6.0, 3.37)
         ]
-        self.assertListEqual(rounded_data, control)
+        self.assertListEqual(produced, expected)
 
     def test_runoff_depth_incremental(self):
         rainfall_dist = numpy.array(self.ratio_pairs)
         rainfall_depths = rainfall_dist * [6.0, 5.0]
-        data = self.basin.runoff_depth_incremental(rainfall_depths, interval=0.3)
-        data = [round(line, 2) for line in data]
-        control = [
+        produced = self.basin.runoff_depth_incremental(rainfall_depths, interval=0.3)
+        produced = [round(line, 2) for line in produced]
+        expected = [
             0.00,
             0.12,
             0.27,
@@ -244,14 +245,14 @@ class BasinTest(unittest.TestCase):
             0.18,
             0.09
         ]
-        self.assertListEqual(data, control)
+        self.assertListEqual(produced, expected)
 
     def test_flood_hydrograph(self):
         rainfall_dist = numpy.array(self.ratio_pairs)
         rainfall_depths = rainfall_dist * [6.0, 5.0]
         hydrograph = self.basin.flood_hydrograph(rainfall_depths, interval=0.3)
-        data = [(round(line[0], 1), round(line[1], 0)) for line in hydrograph.tolist()]
-        control = [
+        produced = [(round(line[0], 1), round(line[1], 0)) for line in hydrograph.tolist()]
+        expected = [
             (0.0, 0.0),
             (0.3, 0.0),
             (0.6, 17.0),
@@ -299,4 +300,4 @@ class BasinTest(unittest.TestCase):
             (13.2, 0.0),
             (13.5, 0.0)
         ]
-        self.assertListEqual(data, control)
+        self.assertListEqual(produced, expected)

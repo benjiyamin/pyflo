@@ -1,30 +1,36 @@
 
 import os
-from distutils.core import setup
+from setuptools import setup, find_packages
 
 
 def read(filename):
     return open(os.path.join(os.path.dirname(__file__), filename)).read()
 
+def readlines(filename):
+    with open(os.path.join(os.path.dirname(__file__), filename)) as open_file:
+        return [l.split("==")[0] for l in open_file.readlines()]
+
 
 setup(
     name='pyflo',
-    version=0.1,
+    version='0.3.3',
     author='benjiyamin, see AUTHORS.md',
     author_email='benjiyamin@gmail.com',
-    description='Hydra is an open-source library written in Python for performing hydraulic and '
+    description='PyFlo is an open-source library written in Python for performing hydraulic and '
                 'hydrology stormwater analysis. ',
-    license='GNU General Public License, see LICENSE.md',
-    keywords='hydraulics hydrology storm simulation,',
-    url='https://github.com/benjiyamin/pyflo',
-    packages=['pyflo'],
+    license='GNU General Public License v3 (GPLv3), see LICENSE.md',
+    keywords='hydraulics hydrology storm simulation',
+    url='https://benjiyamin.github.io/pyflo',
+    packages=find_packages(exclude=["tests"]),
+    # packages=['pyflo'],
     long_description=read('README.md'),
+    install_requires=readlines('requirements/production.txt'),
     classifiers=[
         'Development Status :: 4 - Beta',
         'Operating System :: MacOS :: MacOS X',
         'Operating System :: Microsoft :: Windows',
         'Operating System :: POSIX',
-        'License :: OSI Approved :: GNU General Public License v2 (GPLv2)',
+        'License :: OSI Approved :: GNU General Public License v3 (GPLv3)',
         'Programming Language :: Python'
     ],
 )

@@ -35,18 +35,15 @@ def links_up_from_node(node, links):
             | ['S-8', 'S-6', 'S-7', 'S-4', 'S-5']
 
     """
-    trigger = True
-    nodes_ds = [node]
+    queue = [node]
     links_out = []
     links_in = copy.copy(links)
-    while trigger:
-        trigger = False
-        for node in nodes_ds:
-            for i, link in enumerate(links_in):
-                if link.node_2 == node and link.node_1 not in nodes_ds:
-                    nodes_ds.append(link.node_1)
-                    links_out.append(links_in.pop(i))
-                    trigger = True
+    while queue:
+        curr_node = queue.pop()
+        for i, link in enumerate(links_in):
+            if link.node_2 == curr_node and link.node_1 not in queue:
+                queue.append(link.node_1)
+                links_out.append(links_in[i])
     return links_out
 
 
@@ -104,16 +101,15 @@ def links_down_from_node(node, links):
 
     """
     links_out = []
-    node_curr = node
-    trigger = True
+    queue = node
     links_in = copy.copy(links)
-    while trigger:
-        trigger = False
+    while queue:
+        queue = None
         for i, link in enumerate(links_in):
-            if link.node_1 == node_curr:
+            if link.node_1 == queue:
                 links_out.append(links_in.pop(i))
-                node_curr = link.node_2
-                trigger = True
+                queue = link.node_2
+                break
     return links_out
 
 

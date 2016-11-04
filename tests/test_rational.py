@@ -12,22 +12,22 @@ class ImportIntensityFromJsonTest(unittest.TestCase):
         with open('./resources/intensity/fdot.json') as data_file:
             self.data = json.load(data_file)
 
-    def test_intensty_equation(self):
-        data = self.data['equation']
-        control = '[a] + [b] * log([t]) + [c] * log([t])**2 + [d] * log([t])**3'
-        self.assertEqual(data, control)
+    def test_intensity_equation(self):
+        produced = self.data['equation']
+        expected = '[a] + [b]*log([t]) + [c]*log([t])**2 + [d]*log([t])**3'
+        self.assertEqual(produced, expected)
 
     def test_intensity_x_key(self):
-        data = self.data['input_key']
-        control = '[t]'
-        self.assertEqual(data, control)
+        produced = self.data['input_key']
+        expected = '[t]'
+        self.assertEqual(produced, expected)
 
     def test_intensity_coefficients(self):
         zone10_data = [zone for zone in self.data['zones'] if zone['name'] == 'FDOT ZONE 10'][0]
         year03_data = [freq for freq in zone10_data['frequencies'] if freq['duration'] == 3][0]
-        data = year03_data['coefficients']
-        control = {'[a]': 11.32916, '[b]': -1.38557, '[c]': -0.36672, '[d]': 0.05012}
-        self.assertEqual(data, control)
+        produced = year03_data['coefficients']
+        expected = {'[a]': 11.32916, '[b]': -1.38557, '[c]': -0.36672, '[d]': 0.05012}
+        self.assertEqual(produced, expected)
 
 
 class OneReachGeopakTest(unittest.TestCase):
@@ -37,11 +37,11 @@ class OneReachGeopakTest(unittest.TestCase):
         s31 = network.create_node()
         out = network.create_node()
         rc18 = sections.Circle(diameter=1.5, n=0.012)
-        s31.create_reach(node_2=out, invert_1=4.1, invert_2=4.0, length=65.76, section=rc18)
+        s31.create_reach(node_2=out, inverts=(4.1, 4.0), length=65.76, section=rc18)
         b31 = hydrology.Basin(tc=10.0, area=1.58, c=0.276)
         s31.add_basin(b31)
         zone10_03year = distributions.Evaluator(
-            equation='[a] + [b] * log([t]) + [c] * log([t])**2 + [d] * log([t])**3',
+            equation='[a] + [b]*log([t]) + [c]*log([t])**2 + [d]*log([t])**3',
             x_key='[t]',
             eq_kwargs={'[a]': 11.32916, '[b]': -1.38557, '[c]': -0.36672, '[d]': 0.05012},
             x_multi=60.0
@@ -55,24 +55,27 @@ class OneReachGeopakTest(unittest.TestCase):
         self.data = analysis.hgl_solution_data()
 
     def test_get_cumulative_runoff(self):
-        data = tuple([round(l['runoff_area'], 1) for l in hydraulics.totaled_basin_data(self.node)])
-        control = (round(0.276 * 1.58, 1),)
-        self.assertTupleEqual(data, control)
+        basin_data = hydraulics.totaled_basin_data(self.node)
+        produced = tuple(
+            [round(r_data['c'] * r_data['area'], 1) for r, r_data in basin_data.items()]
+        )
+        expected = (round(0.276 * 1.58, 1),)
+        self.assertTupleEqual(produced, expected)
 
     def test_flow(self):
-        data = tuple([round(line['flow'], 1) for line in self.data])
-        control = (3.0,)
-        self.assertTupleEqual(data, control)
+        produced = tuple([round(r_data['flow'], 1) for r, r_data in self.data.items()])
+        expected = (3.0,)
+        self.assertTupleEqual(produced, expected)
 
     def test_hgl_upper(self):
-        data = tuple([round(line['hgl_upper'], 1) for line in self.data])
-        control = (5.0,)
-        self.assertTupleEqual(data, control)
+        produced = tuple([round(r_data['hgl_1'], 1) for r, r_data in self.data.items()])
+        expected = (5.0,)
+        self.assertTupleEqual(produced, expected)
 
     def test_hgl_lower(self):
-        data = tuple([round(line['hgl_lower'], 1) for line in self.data])
-        control = (4.9,)
-        self.assertTupleEqual(data, control)
+        produced = tuple([round(r_data['hgl_2'], 1) for r, r_data in self.data.items()])
+        expected = (4.9,)
+        self.assertTupleEqual(produced, expected)
 
 
 class FiveReachGeopakTest(unittest.TestCase):
@@ -87,11 +90,11 @@ class FiveReachGeopakTest(unittest.TestCase):
         out = network.create_node()
         rc18 = sections.Circle(diameter=1.5, n=0.012)
         rc24 = sections.Circle(diameter=2.0, n=0.012)
-        s201.create_reach(node_2=s203, invert_1=25.5, invert_2=20.3, length=642.35, section=rc18)
-        s202.create_reach(node_2=s204, invert_1=25.4, invert_2=20.3, length=625.32, section=rc18)
-        s203.create_reach(node_2=s203a, invert_1=-1.0, invert_2=-1.2, length=85.82, section=rc24)
-        s204.create_reach(node_2=s203, invert_1=19.5, invert_2=19.3, length=81.26, section=rc18)
-        s203a.create_reach(node_2=out, invert_1=-1.2, invert_2=-1.3, length=23.00, section=rc24)
+        s201.create_reach(node_2=s203, inverts=(25.5, 20.3), length=642.35, section=rc18)
+        s202.create_reach(node_2=s204, inverts=(25.4, 20.3), length=625.32, section=rc18)
+        s203.create_reach(node_2=s203a, inverts=(-1.0, -1.2), length=85.82, section=rc24)
+        s204.create_reach(node_2=s203, inverts=(19.5, 19.3), length=81.26, section=rc18)
+        s203a.create_reach(node_2=out, inverts=(-1.2, -1.3), length=23.00, section=rc24)
         b201 = hydrology.Basin(tc=10.0, area=1.00, c=0.950)
         b202 = hydrology.Basin(tc=10.0, area=0.99, c=0.950)
         b203 = hydrology.Basin(tc=10.0, area=0.71, c=0.950)
@@ -101,7 +104,7 @@ class FiveReachGeopakTest(unittest.TestCase):
         s203.add_basin(b203)
         s204.add_basin(b204)
         zone10_03year = distributions.Evaluator(
-            equation='[a] + [b] * log([t]) + [c] * log([t])**2 + [d] * log([t])**3',
+            equation='[a] + [b]*log([t]) + [c]*log([t])**2 + [d]*log([t])**3',
             x_key='[t]',
             eq_kwargs={'[a]': 11.32916, '[b]': -1.38557, '[c]': -0.36672, '[d]': 0.05012},
             x_multi=60.0
@@ -115,24 +118,27 @@ class FiveReachGeopakTest(unittest.TestCase):
         self.data = analysis.hgl_solution_data()
 
     def test_get_cumulative_runoff(self):
-        data = tuple([round(l['runoff_area'], 2) for l in hydraulics.totaled_basin_data(self.node)])
-        control = (0.94, 1.61, 0.95, 3.23, 3.23)
-        self.assertTupleEqual(data, control)
+        basin_data = hydraulics.totaled_basin_data(self.node)
+        produced = tuple(
+            [round(r_data['c'] * r_data['area'], 2) for r, r_data in basin_data.items()]
+        )
+        expected = (0.94, 1.61, 0.95, 3.23, 3.23)
+        self.assertTupleEqual(produced, expected)
 
     def test_flow(self):
-        data = tuple([round(line['flow'], 1) for line in self.data])
-        control = (6.5, 10.4, 6.5, 20.9, 20.7)
-        self.assertTupleEqual(data, control)
+        produced = tuple([round(r_data['flow'], 1) for r, r_data in self.data.items()])
+        expected = (6.5, 10.4, 6.5, 20.9, 20.7)
+        self.assertTupleEqual(produced, expected)
 
     def test_hgl_upper(self):
-        data = tuple([round(line['hgl_upper'], 1) for line in self.data])
-        control = (26.3, 21.5, 26.4, 6.9, 6.3)
-        self.assertTupleEqual(data, control)
+        produced = tuple([round(r_data['hgl_1'], 1) for r, r_data in self.data.items()])
+        expected = (26.3, 21.5, 26.4, 6.9, 6.3)
+        self.assertTupleEqual(produced, expected)
 
     def test_hgl_lower(self):
-        data = tuple([round(line['hgl_lower'], 1) for line in self.data])
-        control = (21.5, 20.8, 21.2, 6.3, 6.1)
-        self.assertTupleEqual(data, control)
+        produced = tuple([round(r_data['hgl_2'], 1) for r, r_data in self.data.items()])
+        expected = (21.5, 20.8, 21.2, 6.3, 6.1)
+        self.assertTupleEqual(produced, expected)
 
 
 class FlatAnalysisTest(unittest.TestCase):
@@ -151,14 +157,14 @@ class FlatAnalysisTest(unittest.TestCase):
         rc18 = sections.Circle(diameter=1.5, n=0.012)
         rc24 = sections.Circle(diameter=2.0, n=0.012)
 
-        s1.create_reach(node_2=s2, invert_1=6.4, invert_2=6.2, length=110.0, section=rc18)
-        s2.create_reach(node_2=s3, invert_1=6.2, invert_2=5.9, length=200.0, section=rc18)
-        s3.create_reach(node_2=s4, invert_1=5.9, invert_2=5.6, length=200.0, section=rc18)
-        s4.create_reach(node_2=s7, invert_1=5.6, invert_2=5.4, length=100.0, section=rc18)
-        s5.create_reach(node_2=s7, invert_1=5.6, invert_2=5.4, length=110.0, section=rc18)
-        s7.create_reach(node_2=s8, invert_1=5.4, invert_2=4.5, length=025.0, section=rc24)
-        s6.create_reach(node_2=s8, invert_1=4.6, invert_2=4.5, length=032.0, section=rc18)
-        s8.create_reach(node_2=ol, invert_1=4.5, invert_2=4.2, length=250.0, section=rc24)
+        s1.create_reach(node_2=s2, inverts=(6.4, 6.2), length=110.0, section=rc18)
+        s2.create_reach(node_2=s3, inverts=(6.2, 5.9), length=200.0, section=rc18)
+        s3.create_reach(node_2=s4, inverts=(5.9, 5.6), length=200.0, section=rc18)
+        s4.create_reach(node_2=s7, inverts=(5.6, 5.4), length=100.0, section=rc18)
+        s5.create_reach(node_2=s7, inverts=(5.6, 5.4), length=110.0, section=rc18)
+        s7.create_reach(node_2=s8, inverts=(5.4, 4.5), length=025.0, section=rc24)
+        s6.create_reach(node_2=s8, inverts=(4.6, 4.5), length=032.0, section=rc18)
+        s8.create_reach(node_2=ol, inverts=(4.5, 4.2), length=250.0, section=rc24)
 
         b1 = hydrology.Basin(tc=10.0, shapes=((0.30, 0.95), (0.05, 0.20)))
         s1.add_basin(b1)
@@ -179,7 +185,7 @@ class FlatAnalysisTest(unittest.TestCase):
         s8.add_basin(b8)
 
         zone06_03year = distributions.Evaluator(
-            equation='[a] + [b] * log([t]) + [c] * log([t])**2 + [d] * log([t])**3',
+            equation='[a] + [b]*log([t]) + [c]*log([t])**2 + [d]*log([t])**3',
             x_key='[t]',
             eq_kwargs={'[a]': 14.98331, '[b]': -4.44963, '[c]': 0.35683, '[d]': -0.00224},
             x_multi=60.0
@@ -195,14 +201,17 @@ class FlatAnalysisTest(unittest.TestCase):
         self.data = analysis.hgl_solution_data()
 
     def test_get_cumulative_runoff(self):
-        data = tuple([round(l['runoff_area'], 1) for l in hydraulics.totaled_basin_data(self.node)])
-        control = (0.5, 0.3, 0.5, 0.5, 0.9, 1.4, 0.2, 2.0)
-        self.assertTupleEqual(data, control)
+        basin_data = hydraulics.totaled_basin_data(self.node)
+        produced = tuple(
+            [round(r_data['c'] * r_data['area'], 1) for r, r_data in basin_data.items()]
+        )
+        expected = (0.3, 0.5, 0.5, 0.5, 0.9, 1.4, 0.2, 2.0)
+        self.assertTupleEqual(produced, expected)
 
     def test_physical_fall(self):
-        data = tuple([round(l['reach'].invert_1 - l['reach'].invert_2, 1) for l in self.data])
-        control = (0.2, 0.2, 0.3, 0.3, 0.2, 0.9, 0.1, 0.3)
-        self.assertTupleEqual(data, control)
+        produced = tuple([round(r.inverts[0] - r.inverts[1], 1) for r, r_data in self.data.items()])
+        expected = (0.2, 0.3, 0.3, 0.2, 0.2, 0.9, 0.1, 0.3)
+        self.assertTupleEqual(produced, expected)
 
 
 class SteepAnalysisTest(unittest.TestCase):
@@ -218,11 +227,11 @@ class SteepAnalysisTest(unittest.TestCase):
         rc18 = sections.Circle(diameter=1.5, n=0.012)
         rc24 = sections.Circle(diameter=2.0, n=0.012)
 
-        s15.create_reach(node_2=s14, invert_1=55.2, invert_2=54.7, length=300.0, section=rc18)
-        s14.create_reach(node_2=s13, invert_1=54.7, invert_2=54.2, length=300.0, section=rc18)
-        s13.create_reach(node_2=s12, invert_1=54.2, invert_2=50.0, length=300.0, section=rc18)
-        s12.create_reach(node_2=s11, invert_1=50.0, invert_2=46.0, length=300.0, section=rc18)
-        s11.create_reach(node_2=out, invert_1=45.5, invert_2=44.5, length=300.0, section=rc24)
+        s15.create_reach(node_2=s14, inverts=(55.2, 54.7), length=300.0, section=rc18)
+        s14.create_reach(node_2=s13, inverts=(54.7, 54.2), length=300.0, section=rc18)
+        s13.create_reach(node_2=s12, inverts=(54.2, 50.0), length=300.0, section=rc18)
+        s12.create_reach(node_2=s11, inverts=(50.0, 46.0), length=300.0, section=rc18)
+        s11.create_reach(node_2=out, inverts=(45.5, 44.5), length=300.0, section=rc24)
 
         b15 = hydrology.Basin(tc=10.0, area=0.2, c=0.80)
         s15.add_basin(b15)
@@ -240,7 +249,7 @@ class SteepAnalysisTest(unittest.TestCase):
         s11.add_basin(b11)
 
         zone07_03year = distributions.Evaluator(
-            equation='[a] + [b] * log([t]) + [c] * log([t])**2 + [d] * log([t])**3',
+            equation='[a] + [b]*log([t]) + [c]*log([t])**2 + [d]*log([t])**3',
             x_key='[t]',
             eq_kwargs={'[a]': 12.43560, '[b]': -2.56458, '[c]': -0.06903, '[d]': 0.02787},
             x_multi=60.0
@@ -256,16 +265,19 @@ class SteepAnalysisTest(unittest.TestCase):
         self.data = analysis.hgl_solution_data()
 
     def test_get_cumulative_runoff(self):
-        data = tuple([round(l['runoff_area'], 2) for l in hydraulics.totaled_basin_data(self.node)])
-        control = (0.16, 0.96, 1.44, 1.84, 2.72)
-        self.assertTupleEqual(data, control)
+        basin_data = hydraulics.totaled_basin_data(self.node)
+        produced = tuple(
+            [round(r_data['c'] * r_data['area'], 2) for r, r_data in basin_data.items()]
+        )
+        expected = (0.16, 0.96, 1.44, 1.84, 2.72)
+        self.assertTupleEqual(produced, expected)
 
     def test_flow(self):
-        data = tuple([round(line['flow'], 1) for line in self.data])
-        control = (1.0, 5.8, 8.3, 10.4, 15.1)
-        self.assertTupleEqual(data, control)
+        produced = tuple([round(r_data['flow'], 1) for r, r_data in self.data.items()])
+        expected = (1.0, 5.8, 8.3, 10.4, 15.1)
+        self.assertTupleEqual(produced, expected)
 
     def test_physical_fall(self):
-        data = tuple([round(l['reach'].invert_1 - l['reach'].invert_2, 2) for l in self.data])
-        control = (0.5, 0.5, 4.2, 4.0, 1.0)
-        self.assertTupleEqual(data, control)
+        produced = tuple([round(r.inverts[0] - r.inverts[1], 2) for r, r_data in self.data.items()])
+        expected = (0.5, 0.5, 4.2, 4.0, 1.0)
+        self.assertTupleEqual(produced, expected)

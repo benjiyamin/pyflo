@@ -71,7 +71,7 @@ class Basin(basins.Basin):
 
     def runoff_volume(self, rain_depth):
         """Get the volume of runoff generated from a defined rainfall and properties of the basin.
-        
+
         Args:
             rain_depth (float): In :math:`inches`.
 

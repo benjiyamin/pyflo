@@ -6,6 +6,7 @@
 """
 
 import itertools
+from typing import Tuple
 
 from pyflo import links, sections, basins
 
@@ -25,21 +26,24 @@ class Node(object):
         self.basin = None
         self.reservoir = None
 
-    def create_reach(self, node_2, invert_1, invert_2, length, section):
+    def create_reach(self, node_2, section, slope=None, inverts=None, length=None, k_minor=None):
         """Create a new :class:`Reach` and assign the node to the upstream end.
 
         Args:
             node_2 (Node): The node to link at the downstream end.
-            invert_1 (float): The reach bottom elevation at the upstream end, in :math:`feet`.
-            invert_2 (float): The reach bottom elevation at the downstream end, in :math:`feet`.
-            length (float): The total longitudinal distance, end-to-end, in :math:`feet`.
             section (sections.Section): The cross sectional shape.
+            slope (float): The rise/run of the reach, :math:`feet`/:math:`feet`.
+            inverts (Tuple[float, float]): The elevations of each bottom end of the reach, in
+                :math:`feet`. The first value is the upstream ("from") end, while the second value
+                is the downstream ("to") end.
+            length (float): The total longitudinal distance, end-to-end, in :math:`feet`.
+            k_minor (float): An optional minor loss coefficient for including minor losses.
 
         Returns:
             hydra.links.Reach: The created instance.
 
         """
-        reach = links.Reach(invert_1, invert_2, length, section, node_1=self, node_2=node_2)
+        reach = links.Reach(section, slope, inverts, length, k_minor, node_1=self, node_2=node_2)
         self.reach = reach
         self.links.append(reach)
         return reach
@@ -61,7 +65,7 @@ class Node(object):
         weir = links.Weir(invert, k_orif, k_weir, section, node_1=self, node_2=node_2)
         self.links.append(weir)
         return weir
-    
+
     def add_reach(self, reach):
         """Assign a :class:`Reach` instance as a child of the node.
 
@@ -79,7 +83,7 @@ class Node(object):
     def add_link(self, link):
         link.node_1 = self
         self.links.append(link)
-    
+
     def add_basin(self, basin):
         """Assign a :class:`Basin` instance as a child of the node.
 
