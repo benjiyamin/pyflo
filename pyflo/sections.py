@@ -211,7 +211,7 @@ class Irregular(Section):
     def __init__(self, points, count=1, **kwargs):
         super(Irregular, self).__init__(count, **kwargs)
         self.points = points
-    
+
     def get_new_vertices(self, depth):
         """Get the new vertices of the cross section including
             the intersection of ground line with the water surface, given a depth from the
@@ -229,7 +229,7 @@ class Irregular(Section):
         right = 0               # Water surface intersection at right
         new_points = []
         water_elevation = self.get_lowest_elev + depth
-        
+
         for index in range(len(self.points)):
             x, y = self.points[index]
 
@@ -270,7 +270,7 @@ class Irregular(Section):
             float: Wet area, in :math:`feet`.
 
         """
-        
+
         vertices = self.get_new_vertices(depth)
         n = len(vertices)
         area = 0.0
@@ -280,7 +280,7 @@ class Irregular(Section):
             area -= vertices[j][0] * vertices[i][1]
         area = abs(area) / 2.0
         return area
-    
+
     def wet_perimeter(self, depth):
         """Get the wet perimeter of flow, given a depth from the lowest point.
 
@@ -300,7 +300,7 @@ class Irregular(Section):
             p += self.point_distance([p1, p2])
 
         return p
-    
+
     def point_distance(self, two_points):
         """Get the distance between two given points.
 
@@ -319,7 +319,7 @@ class Irregular(Section):
         dist = math.sqrt((y2-y1)**2 + (x2-x1)**2)
 
         return dist
-    
+
     @property
     def get_lowest_elev(self):
         """Get the elevation of the lowest point of the cross section.
