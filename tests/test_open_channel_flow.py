@@ -61,3 +61,56 @@ class TrapezoidalChannelTest(unittest.TestCase):
         produced = channel.normal_flow(depth=2.0)
         expected = 150.0  # ft/s
         self.assertAlmostEqual(produced, expected, -1)
+
+
+class FDOTChannelTest(unittest.TestCase):
+    """From FDOT Drainage Design Guide Example 3.1-1 - Discharge Given Normal Depth:
+
+    Given:
+        Depth = 0.6 ft
+        Longitudinal Slope = 0.005 ft/ft
+        Trapezoidal Cross Section
+            1:4 Left Slope
+            5 ft Bottom
+            1:6 Right Slope
+        Manning’s Roughness = 0.06
+
+    Calculate:
+        Discharge, assuming normal depth
+
+    """
+
+    def setUp(self):
+        self.depth = 0.6
+        self.section = sections.Trapezoid(l_slope=4.0, b_width=5.0, r_slope=6.0, n=0.06)
+        self.channel = links.Reach(section=self.section, slope=0.005)
+
+    def test_step_1_1(self):
+        # Calculate Wetted Perimeter
+        produced = self.section.wet_perimeter(self.depth)
+        expected = 11.124  # ft
+        self.assertAlmostEqual(produced, expected, 3)
+
+    def test_step_1_2(self):
+        # Calculate Cross-Sectional Area
+        produced = self.section.flow_area(self.depth)
+        expected = 4.8  # ft^2
+        self.assertAlmostEqual(produced, expected, 1)
+
+    def test_step_2(self):
+        # Calculate Hydraulic Radius
+        produced = self.section.hyd_radius(self.depth)
+        expected = 0.4315  # ft
+        self.assertAlmostEqual(produced, expected, 3)
+
+    def test_step_3(self):
+        # Calculate Average Velocity
+        produced = self.channel.velocity(self.depth)
+        expected = 1.0  # ft/s
+        self.assertAlmostEqual(produced, expected, 0)
+
+    def test_step_4(self):
+        # Calculate the Discharge
+        produced = self.channel.normal_flow(self.depth)
+        expected = 4.8  # cfs
+        self.assertAlmostEqual(produced, expected, 1)
