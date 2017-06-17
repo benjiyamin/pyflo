@@ -210,7 +210,7 @@ class Reach(Link):
             method: The options are `'average'` and `'maximum'`.
 
         Returns:
-            float: : The shear stress, in :math:`pounds/feet^2`.
+            float: The shear stress, in :math:`pounds/feet^2`.
 
         """
         if method == 'average':

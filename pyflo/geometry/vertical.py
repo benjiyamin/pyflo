@@ -105,6 +105,32 @@ class Profile:
                 return pt
 
     def slope(self, station):
+        """Gets the slope at a station along the profile.
+
+        Args:
+            station (float): The position along the profile, in :math:`feet`.
+
+        Returns:
+            float: The slope along the profile, in :math:`feet/feet`.
+
+        Note:
+            First checks if specified station is not "smooth".
+            Station is not smooth if::
+
+                1. The station matches a point station.
+                2. The matching point has no specified length.
+
+        """
+        for pt in sorted(self.pts, key=lambda p: p.station):
+            if pt.length == 0.0:                            # Curve not smooth
+                if pt.station == station:
+                    if pt.g1() < 0.0 and pt.g2() < 0.0:     # Both grades negative
+                        return pt.g1()
+                    elif pt.g1() > 0.0 and pt.g2() > 0.0:   # Both grades positive
+                        return pt.g2()
+                elif pt.station > station:
+                    break
+
         pt_pvc_prev = self.pt_pvc_prev(station)
         pt_pvt_next = self.pt_pvt_next(station)
         if pt_pvc_prev is pt_pvt_next:

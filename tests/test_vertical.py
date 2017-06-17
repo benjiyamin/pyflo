@@ -166,3 +166,24 @@ class VerticalCurveTest(unittest.TestCase):
             53.732
         )
         self.assertTupleEqual(expected, produced)
+
+
+class UnsmoothTest(unittest.TestCase):
+
+    def setUp(self):
+        self.profile = Profile()
+        self.profile.create_pt(000.0, 2.0)
+        self.profile.create_pt(100.0, 0.5)
+        self.profile.create_pt(200.0, 0.0)
+        self.profile.create_pt(300.0, 1.0)
+        self.profile.create_pt(400.0, 1.5)
+
+    def test_negative_unsmooth(self):
+        produced = self.profile.slope(100.0)
+        expected = self.profile.slope(050.0)
+        self.assertEqual(expected, produced)
+
+    def test_positive_unsmooth(self):
+        produced = self.profile.slope(300.0)
+        expected = self.profile.slope(350.0)
+        self.assertEqual(expected, produced)
