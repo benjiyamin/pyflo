@@ -5,8 +5,8 @@
 
 """
 
-import collections
 import math
+from typing import List, Tuple
 
 
 class Section(object):
@@ -185,7 +185,7 @@ class Trapezoid(Section):
         """Get the wet perimeter of flow, given a depth from the invert.
 
         Args:
-            depth (float): Depth, in :math:`feet`
+            depth (float): Depth, in :math:`feet`.
 
         Returns:
             float: Wet perimeter, in :math:`feet`.
@@ -212,74 +212,62 @@ class Irregular(Section):
         super(Irregular, self).__init__(count, **kwargs)
         self.points = points
 
-    def get_new_vertices(self, depth):
-        """Get the new vertices of the cross section including
-            the intersection of ground line with the water surface, given a depth from the
-            lowest point.
+    def flow_vertices(self, depth):
+        """Get the new vertices of the cross section including the intersection of ground line with
+            the water surface, given a depth from the lowest point.
 
         Args:
-            depth (float): Depth, in :math:`feet`
+            depth (float): Depth, in :math:`feet`.
 
         Returns:
-            list of tuples (float) in (x, y) format
+            List[Tuple[float, float]]: The updated vertices (points).
 
         """
+        left = 0                                    # Water surface intersection at left
+        right = 0                                   # Water surface intersection at right
+        points = []
+        elev_water = self.elev_lowest + depth
 
-        left = 0                # Water surface intersection at left
-        right = 0               # Water surface intersection at right
-        new_points = []
-        water_elevation = self.get_lowest_elev + depth
+        for i, pt in enumerate(self.points):
+            x2, y2 = pt
+            pt_prev = self.points[i - 1]
+            x1, y1 = pt_prev
 
-        for index in range(len(self.points)):
-            x, y = self.points[index]
+            if left == 0 and y2 < elev_water:
+                left += 1
+                x3 = (elev_water-y1) * (x2-x1) / (y2-y1) + x1
+                points.append((x3, elev_water))
 
-            # Look for the first point of intersection
-            if left == 0:
-                if y < water_elevation:
-                    left += 1
-                    x1 = self.points[index-1][0]
-                    y1 = self.points[index-1][1]
-                    x2 = self.points[index][0]
-                    y2 = self.points[index][1]
-                    x3 = (water_elevation - y1) * (x2 - x1) / (y2 - y1) + x1
-                    new_points.append((x3, water_elevation))
-
-            if right == 0:
-                if left == 1:
-                    if y > water_elevation:
-                        right += 1
-                        x1 = self.points[index-1][0]
-                        y1 = self.points[index-1][1]
-                        x2 = self.points[index][0]
-                        y2 = self.points[index][1]
-                        x3 = (water_elevation - y1) * (x2 - x1) / (y2 - y1) + x1
-                        new_points.append((x3, water_elevation))
-
-            if left == 1:
-                if right == 0:
-                    new_points.append(self.points[index])
-        return new_points
+            if left == 1 and right == 0:
+                if y2 > elev_water:
+                    right += 1
+                    x3 = (elev_water-y1) * (x2-x1) / (y2-y1) + x1
+                    points.append((x3, elev_water))
+                else:
+                    points.append(pt)
+        return points
 
     def flow_area(self, depth):
         """Get the cross sectional area of flow, given a depth from the lowest point.
 
         Args:
-            depth (float): Depth, in :math:`feet`
+            depth (float): Depth, in :math:`feet`.
 
         Returns:
-            float: Wet area, in :math:`feet`.
+            float: Wet area, in :math:`feet^2`.
 
         """
 
-        vertices = self.get_new_vertices(depth)
-        n = len(vertices)
+        vertices = self.flow_vertices(depth)
         area = 0.0
-        for i in range(n):
+        for i, v in enumerate(vertices):
+            n = len(vertices)
             j = (i + 1) % n
-            area += vertices[i][0] * vertices[j][1]
-            area -= vertices[j][0] * vertices[i][1]
-        area = abs(area) / 2.0
-        return area
+            x1, y1 = v
+            x2, y2 = vertices[j]
+            area += x1 * y2
+            area -= x2 * y1
+        return abs(area) / 2.0
 
     def wet_perimeter(self, depth):
         """Get the wet perimeter of flow, given a depth from the lowest point.
@@ -291,54 +279,20 @@ class Irregular(Section):
             float: Wet perimeter, in :math:`feet`.
 
         """
-        p = 0.0
-        new_points = self.get_new_vertices(depth)
-        n = len(new_points)
-        for i in range(n-1):
-            p1 = new_points[i]
-            p2 = new_points[i+1]
-            p += self.point_distance([p1, p2])
-
-        return p
-
-    def point_distance(self, two_points):
-        """Get the distance between two given points.
-
-        Args:
-            two_points (float): Depth, in :math:`feet`
-
-        Returns:
-            float: Distance between two points, in :math:`feet`.
-
-        """
-        p1 = two_points[0]
-        p2 = two_points[1]
-        x1, y1 = p1
-        x2, y2 = p2
-
-        dist = math.sqrt((y2-y1)**2 + (x2-x1)**2)
-
-        return dist
+        perimeter = 0.0
+        vertices = self.flow_vertices(depth)
+        for pt1, pt2 in zip(vertices, vertices[1:]):
+            x1, y1 = pt1
+            x2, y2 = pt2
+            perimeter += math.hypot(x2 - x1, y2 - y1)
+        return perimeter
 
     @property
-    def get_lowest_elev(self):
+    def elev_lowest(self):
         """Get the elevation of the lowest point of the cross section.
-
-        Args:
 
         Returns:
             float: Elevation, in :math:`feet`.
 
         """
-        elevs = []                  # List of elevations (ordinates)
-        lowest = 0                  # Initial value of lowest
-        for point in self.points:
-            elevs.append(point[1])  # Iterate through the points and collect the ordinates
-        for i in range(len(elevs)):  # Find the lowest in the list of ordinates
-            if i == len(elevs):
-                break
-            if elevs[i] < lowest:
-                lowest = elevs[i]
-            else:
-                lowest = lowest
-        return lowest
+        return min(pt[1] for pt in self.points)
