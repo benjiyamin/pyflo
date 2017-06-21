@@ -167,6 +167,58 @@ class VerticalCurveTest(unittest.TestCase):
         )
         self.assertTupleEqual(expected, produced)
 
+    def test_key_stations(self):
+        elevations = [
+            113600.00,
+            136497.65,
+        ]
+        pvcs = [
+            113600.00,
+            114312.97,
+            116274.76,
+            118704.00,
+            120233.36,
+            121624.50,
+            124350.00,
+            125341.51,
+            127429.35,
+            130683.05,
+            131655.02,
+            134442.88,
+            136497.65,
+        ]
+        pvts = [
+            113600.00,
+            115112.97,
+            118634.76,
+            119504.00,
+            121033.36,
+            123324.50,
+            125150.00,
+            127341.51,
+            128229.35,
+            131483.05,
+            132655.02,
+            135242.88,
+            136497.65,
+        ]
+        extremums = [
+            114603.89,
+            117162.93,
+            119386.35,
+            120073.35,
+            123169.96,
+            124454.34,
+            126394.14,
+            128389.35,
+            130983.04,
+            132109.56,
+            134712.11,
+        ]
+        stations = elevations + pvcs + pvts + extremums
+        expected = sorted(list(set(stations)))
+        produced = self.profile.key_stations(2)
+        self.assertListEqual(produced, expected)
 
 class UnsmoothTest(unittest.TestCase):
 
@@ -187,3 +239,17 @@ class UnsmoothTest(unittest.TestCase):
         produced = self.profile.slope(300.0)
         expected = self.profile.slope(350.0)
         self.assertEqual(expected, produced)
+
+
+class KeyStationTest(unittest.TestCase):
+
+    def setUp(self):
+        self.profile = Profile()
+        self.profile.create_pt(000.0, 1.0)
+        self.profile.create_pt(100.0, 2.0, 100.0)
+        self.profile.create_pt(200.0, 1.0)
+
+    def test_key_stations(self):
+        produced = self.profile.key_stations(2, 33.3333)
+        expected = [0.0, 50.0, 83.33, 100.0, 116.67, 150.0, 200.0]
+        self.assertListEqual(produced, expected)

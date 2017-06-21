@@ -1,4 +1,6 @@
 
+import numpy as np
+
 
 class Point:
 
@@ -18,13 +20,15 @@ class Point:
         self.length = length
 
     def pt_prev(self):
-        if self is not self.profile.station_first:
+        # if self is not self.profile.station_first:
+        if self.station != self.profile.station_first:
             i = self.profile.pts.index(self)
             pt = self.profile.pts[i - 1]
             return pt
 
     def pt_next(self):
-        if self is not self.profile.station_last:
+        # if self is not self.profile.station_last:
+        if self.station != self.profile.station_last:
             i = self.profile.pts.index(self)
             pt = self.profile.pts[i + 1]
             return pt
@@ -61,9 +65,9 @@ class Point:
         return self.elevation + self.g1() * (self.pvc_station-self.station)
 
     def pvt_elevation(self):
-        return self.elevation + self.g2() * (self.pvt_station - self.station)
+        return self.elevation + self.g2() * (self.pvt_station-self.station)
 
-    def pt_key(self):
+    def extremum_station(self):
         if self.r():
             return self.pvc_station - self.g1()/self.r()*10000.0
 
@@ -149,8 +153,24 @@ class Profile:
             elevation += a * x**2.0 / (2.0*pt.length)
         return elevation
 
-    def pts_key(self):
-        pts_key = []
+    def key_stations(self, decimals, curve_step=None, include=None,
+                     extremum=True, pvc=True, pvt=True):
+        stations = []
         for pt in self.pts:
-            pts_key.append(pt.pt_key())
-        return pts_key
+            if extremum:
+                extremum_station = pt.extremum_station()
+                if extremum_station:
+                    stations.append(round(extremum_station, decimals))
+            if pt.length == 0.0:
+                stations.append(pt.station)
+            if pvc and pt.pvc_station:
+                stations.append(round(pt.pvc_station, decimals))
+            if pvt and pt.pvt_station:
+                stations.append(round(pt.pvt_station, decimals))
+            if curve_step:
+                smooth_stations = np.arange(pt.pvc_station, pt.pvt_station, curve_step)
+                smooth_stations = np.round(smooth_stations, decimals=decimals)
+                stations += smooth_stations.tolist()
+        if include:
+            stations += list(include)
+        return sorted(list(set(stations)))
