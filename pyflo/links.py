@@ -222,15 +222,13 @@ class Reach(Link):
                 number = 1
             elif d_n > depth > d_c:
                 number = 2
-            elif d_n >  d_c > depth:
+            elif d_n > d_c > depth:
                 number = 3
             else:
                 return Exception('No flow classification number found.')
         else:
             number = None
         return letter, number
-
-
 
     def shear_stress(self, depth, method='average'):
         """Get the shear stress along the lining of the reach.

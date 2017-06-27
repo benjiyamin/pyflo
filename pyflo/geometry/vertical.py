@@ -19,27 +19,27 @@ class Point:
         self.elevation = elevation
         self.length = length
 
-    def pt_prev(self):
-        # if self is not self.profile.station_first:
-        if self.station != self.profile.station_first:
+    def prev_pt(self):
+        # if self is not self.profile.first_station:
+        if self.station != self.profile.first_station:
             i = self.profile.pts.index(self)
             pt = self.profile.pts[i - 1]
             return pt
 
-    def pt_next(self):
-        # if self is not self.profile.station_last:
-        if self.station != self.profile.station_last:
+    def next_pt(self):
+        # if self is not self.profile.last_station:
+        if self.station != self.profile.last_station:
             i = self.profile.pts.index(self)
             pt = self.profile.pts[i + 1]
             return pt
 
     def g1(self):
-        pt = self.pt_prev()
+        pt = self.prev_pt()
         if pt:
             return (self.elevation-pt.elevation) / (self.station-pt.station)
 
     def g2(self):
-        pt = self.pt_next()
+        pt = self.next_pt()
         if pt:
             return (pt.elevation-self.elevation) / (pt.station-self.station)
 
@@ -79,13 +79,13 @@ class Profile:
         self.pts = []
 
     @property
-    def station_first(self):
+    def first_station(self):
         if self.pts:
             return min(point.station for point in self.pts)
         return None
 
     @property
-    def station_last(self):
+    def last_station(self):
         if self.pts:
             return max(point.station for point in self.pts)
         return None
@@ -96,13 +96,13 @@ class Profile:
         self.pts.sort(key=lambda p: p.station)
         return pt
 
-    def pt_pvc_prev(self, station):
+    def prev_pvc_pt(self, station):
         for i, pt in enumerate(self.pts):
             pvc_station = pt.pvc_station
             if pvc_station > station:
                 return self.pts[i - 1]
 
-    def pt_pvt_next(self, station):
+    def next_pvt_pt(self, station):
         for pt in self.pts:
             pvt_station = pt.pvt_station
             if pvt_station > station:
@@ -135,16 +135,16 @@ class Profile:
                 elif pt.station > station:
                     break
 
-        pt_pvc_prev = self.pt_pvc_prev(station)
-        pt_pvt_next = self.pt_pvt_next(station)
+        pt_pvc_prev = self.prev_pvc_pt(station)
+        pt_pvt_next = self.next_pvt_pt(station)
         if pt_pvc_prev is pt_pvt_next:
             pt = pt_pvt_next
             return pt.g1() + (station-pt.pvc_station) * pt.r() / 10000.0
         return pt_pvt_next.g1()
 
     def elevation(self, station):
-        pt_pvc_prev = self.pt_pvc_prev(station)
-        pt_pvt_next = self.pt_pvt_next(station)
+        pt_pvc_prev = self.prev_pvc_pt(station)
+        pt_pvt_next = self.next_pvt_pt(station)
         pt = pt_pvt_next
         x = station-pt.pvc_station
         elevation = pt.pvc_elevation() + pt.g1()*x

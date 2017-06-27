@@ -23,7 +23,7 @@ class VerticalCurveTest(unittest.TestCase):
         self.profile.create_pt(134842.88, 092.601, 0800.0)
         self.profile.create_pt(136497.65, 112.176)
         self.pt1 = self.profile.pts[1]
-        self.pt_next = self.profile.pt_pvt_next(120400.00)
+        self.pt_next = self.profile.next_pvt_pt(120400.00)
 
     def test_g1(self):
         expected = -0.010
