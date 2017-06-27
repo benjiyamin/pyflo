@@ -10,7 +10,7 @@ import math
 
 import simpleeval
 from scipy import interpolate
-import numpy
+import numpy as np
 
 
 EVAL_FUNCS = {
@@ -131,7 +131,7 @@ class Evaluator(object):
 
         """
         data_new = list(self.get_data(x_max, x_delta, product))
-        dist_new = numpy.array(data_new)
+        dist_new = np.array(data_new)
         return dist_new
 
 
@@ -140,6 +140,6 @@ def increment(array, interval):
     y_col = array[:, 1]
     fill_value = y_col[0], y_col[-1]
     y_interp = interpolate.interp1d(x_col, y_col, bounds_error=False, fill_value=fill_value)
-    x_new = numpy.arange(x_col[0], x_col[-1] + interval, interval)
+    x_new = np.arange(x_col[0], x_col[-1] + interval, interval)
     y_new = y_interp(x_new)
-    return numpy.column_stack((x_new, y_new))
+    return np.column_stack((x_new, y_new))

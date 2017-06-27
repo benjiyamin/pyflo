@@ -9,7 +9,7 @@ import csv
 import os
 from typing import List, Tuple
 
-import numpy
+import numpy as np
 
 
 def tuple_list_from_csv(filename):
@@ -49,7 +49,7 @@ def array_from_csv(filename):
 
     """
     data = tuple_list_from_csv(filename)
-    array = numpy.array(data)
+    array = np.array(data)
     return array
 
 
