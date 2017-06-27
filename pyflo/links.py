@@ -202,6 +202,36 @@ class Reach(Link):
         b = math.sqrt(constants.G * self.length)
         return velocity / b
 
+    def profile_classification(self, flow, depth=None):
+        d_n = self.normal_depth(flow)
+        d_c = self.critical_depth(flow)
+        if d_n > d_c:
+            letter = 'M'    # Mild
+        elif d_n < d_c:
+            letter = 'S'    # Steep
+        elif d_n == d_c:
+            letter = 'C'    # Critical
+        elif self.inverts[0] < self.inverts[1]:
+            letter = 'A'    # Adverse
+        elif self.inverts[0] == self.inverts[1]:
+            letter = 'H'    # Horizontal
+        else:
+            return Exception('No flow classification letter found.')
+        if depth:
+            if depth > d_n > d_c:
+                number = 1
+            elif d_n > depth > d_c:
+                number = 2
+            elif d_n >  d_c > depth:
+                number = 3
+            else:
+                return Exception('No flow classification number found.')
+        else:
+            number = None
+        return letter, number
+
+
+
     def shear_stress(self, depth, method='average'):
         """Get the shear stress along the lining of the reach.
 
