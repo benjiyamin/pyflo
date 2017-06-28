@@ -103,12 +103,14 @@ def links_down_from_node(node, links):
     links_out = []
     queue = node
     links_in = copy.copy(links)
-    while queue:
-        queue = None
+    switch = True
+    while switch:
+        switch = False
         for i, link in enumerate(links_in):
             if link.node_1 == queue:
                 links_out.append(links_in.pop(i))
                 queue = link.node_2
+                switch = True
                 break
     return links_out
 
