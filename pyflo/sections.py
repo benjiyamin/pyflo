@@ -176,9 +176,9 @@ class Trapezoid(Section):
             float: Area, in :math:`feet^2`.
 
         """
-        l = self.l_slope * depth**2.0 / 2.0
+        l = depth**2.0 / 2.0 / self.l_slope
         c = self.b_width * depth
-        r = self.r_slope * depth**2.0 / 2.0
+        r = depth**2.0 / 2.0 / self.r_slope
         return l + c + r
 
     def wet_perimeter(self, depth):
@@ -191,15 +191,15 @@ class Trapezoid(Section):
             float: Wet perimeter, in :math:`feet`.
 
         """
-        l = math.sqrt(depth**2.0 * (1.0 + self.l_slope**2.0))
+        l = math.sqrt(depth**2.0 * (1.0 + (1.0/self.l_slope)**2.0))
         c = self.b_width
-        r = math.sqrt(depth ** 2.0 * (1.0 + self.r_slope ** 2.0))
+        r = math.sqrt(depth**2.0 * (1.0 + (1.0/self.r_slope)**2.0))
         return l + c + r
 
     def surface_width(self, depth):
-        l = self.l_slope * depth
+        l = depth / self.l_slope
         c = self.b_width
-        r = self.r_slope * depth
+        r = depth / self.r_slope
         return l + c + r
 
     def projection(self, depth):

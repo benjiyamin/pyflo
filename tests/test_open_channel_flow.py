@@ -56,7 +56,7 @@ class TrapezoidalChannelTest(unittest.TestCase):
         # The trapezoidal channel shown has a Manning coefficient of n = 0.013 and is laid at a
         # slope of 0.002. The depth of flow is 2 ft. What is the flow rate?
         # [Picture shows 1:3 slopes and 6 ft bottom]
-        s = sections.Trapezoid(l_slope=3.0, b_width=6.0, r_slope=3.0, n=0.013)
+        s = sections.Trapezoid(l_slope=1/3, b_width=6.0, r_slope=1/3, n=0.013)
         channel = links.Reach(section=s, slope=0.002)
         produced = channel.normal_flow(depth=2.0)
         expected = 150.0  # ft/s
@@ -82,7 +82,7 @@ class FDOTChannelTest(unittest.TestCase):
 
     def setUp(self):
         self.depth = 0.6
-        self.section = sections.Trapezoid(l_slope=4.0, b_width=5.0, r_slope=6.0, n=0.06)
+        self.section = sections.Trapezoid(l_slope=1/4, b_width=5.0, r_slope=1/6, n=0.06)
         self.channel = links.Reach(section=self.section, slope=0.005)
 
     def test_step_1_1(self):
