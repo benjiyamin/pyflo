@@ -5,7 +5,7 @@ livereload==2.4.1
 Markdown==2.6.7
 MarkupSafe==0.23
 matplotlib==1.5.3
-mkdocs==0.15.3
+mkdocs==1.2.3
 mkdocs-bootstrap==0.1.1
 mkdocs-bootswatch==0.4.0
 numpy==1.22.0
